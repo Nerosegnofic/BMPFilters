@@ -1,10 +1,12 @@
-// Program: demo2.cpp
-// Purpose: Demonstrate use of bmplip for handling
-//          bmp colored and grayscale images
-//          Program load a gray image and store in another file
-// Author:  Mohammad El-Ramly
-// Date:    30 March 2018
-// Version: 1.0
+// FCAI – OOP Programming – 2023 - Assignment 1
+// Program Name:			    demo2.cpp
+// Last Modification Date:	    10/5/2023
+// Author1 and ID and Group:	Nour-aldeen Alaa    20220360
+// Author2 and ID and Group:	xxxxx xxxxx
+// Author3 and ID and Group:	xxxxx xxxxx
+// Teaching Assistant:		xxxxx xxxxx
+// Purpose: Applying filters to images
+
 
 #include <iostream>
 #include <fstream>
@@ -13,8 +15,10 @@
 #include "bmplib.cpp"
 
 using namespace std;
-
 unsigned char image[SIZE][SIZE];
+unsigned char image2[SIZE][SIZE];
+unsigned char image3[SIZE][SIZE];
+
 
 void loadImage ();
 void saveImage ();
@@ -28,55 +32,55 @@ void darken_and_lighten();
 
 
 int main() {
-  menu();
-  return 0;
+    menu();
+    return 0;
 }
 
 //_________________________________________
 void loadImage () {
-   char imageFileName[100];
+    char imageFileName[100];
 
-   // Get gray scale image file name
-   cout << "Enter the source image file name: ";
-   cin >> imageFileName;
+    // Get gray scale image file name
+    cout << "Enter the source image file name: ";
+    cin >> imageFileName;
 
-   // Add to it .bmp extension and load image
-   strcat (imageFileName, ".bmp");
-   readGSBMP(imageFileName, image);
+    // Add to it .bmp extension and load image
+    strcat (imageFileName, ".bmp");
+    readGSBMP(imageFileName, image);
 }
 
 //_________________________________________
 void saveImage () {
-   char imageFileName[100];
+    char imageFileName[100];
 
-   // Get gray scale image target file name
-   cout << "Enter the target image file name: ";
-   cin >> imageFileName;
+    // Get gray scale image target file name
+    cout << "Enter the target image file name: ";
+    cin >> imageFileName;
 
-   // Add to it .bmp extension and load image
-   strcat (imageFileName, ".bmp");
-   writeGSBMP(imageFileName, image);
+    // Add to it .bmp extension and load image
+    strcat (imageFileName, ".bmp");
+    writeGSBMP(imageFileName, image);
 }
 
 //_________________________________________
 void BW() {
     int avg {0};
-  for (int i {0}; i < SIZE; ++i) {
-    for (int j {0}; j < SIZE; ++j) {
-        avg += image[i][j];
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            avg += image[i][j];
+        }
     }
-  }
-  avg /= SIZE * SIZE;
+    avg /= SIZE * SIZE;
 
-  for (int i {0}; i < SIZE; ++i) {
-      for (int j {0}; j < SIZE; ++j) {
-          if (image[i][j] > avg) {
-              image[i][j] = 255;
-          } else {
-              image[i][j] = 0;
-          }
-      }
-  }
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            if (image[i][j] > avg) {
+                image[i][j] = 255;
+            } else {
+                image[i][j] = 0;
+            }
+        }
+    }
 }
 
 void invert() {
@@ -89,8 +93,6 @@ void invert() {
 
 void merge() {
     char imageFileName[100];
-    unsigned char image2[SIZE][SIZE];
-    unsigned char image3[SIZE][SIZE];
 
     cout << "Enter the second source image file name: ";
     cin >> imageFileName;
@@ -180,7 +182,7 @@ void rotate() {
 
             break;
         default:
-                break;
+            break;
     }
 
     char imageCopyFileName[100];
@@ -199,10 +201,29 @@ void rotate() {
 }
 
 void darken_and_lighten() {
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
+    cout << "Do you want to (d)arken or (l)ighten?\n";
+    char choice;
+    cin >> choice;
 
-        // do something with the image
+    if (choice == 'd') {
+        //To make the image darker by 50%, you have to decrease the number of bits in the pixel by half
+        //because as we know the pixel in gray-scale images are from zero(Black) to 255(White) bits
+        //so decreasing the bits in the pixel make it more dark.
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                image[i][j] /= 2;
+            }
+        }
+    } else if(choice == 'l'){
+        //Same thing for making it more white, but this time you have to increase the number of bits in the pixel
+
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                double AmountOfIncrease = (255 - image[i][j])/2;
+                image[i][j] = image[i][j] + AmountOfIncrease;
+            }
+
         }
     }
 }
@@ -219,7 +240,7 @@ void menu() {
              << "4 - Flip Image.\n"
              << "5 - Rotate Image.\n"
              << "6 - Darken and Lighten Image.\n"
-             << "7 - Exit" << endl;
+             << "0 - Exit" << endl;
         cin >> choice;
         switch (choice) {
             case 1:
@@ -243,9 +264,9 @@ void menu() {
             default:
                 break;
         }
-        if (choice != 7 && choice != 3 && choice != 5) {
+        if (choice != 0 && choice != 3) {
             saveImage();
         }
-    } while (choice != 7);
+    } while (choice != 0);
 
 }
