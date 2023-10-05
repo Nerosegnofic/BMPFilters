@@ -13,10 +13,8 @@
 #include "bmplib.cpp"
 
 using namespace std;
-unsigned char image[SIZE][SIZE];
-unsigned char image2[SIZE][SIZE];
-unsigned char image3[SIZE][SIZE];
 
+unsigned char image[SIZE][SIZE];
 
 void loadImage ();
 void saveImage ();
@@ -91,6 +89,8 @@ void invert() {
 
 void merge() {
     char imageFileName[100];
+    unsigned char image2[SIZE][SIZE];
+    unsigned char image3[SIZE][SIZE];
 
     cout << "Enter the second source image file name: ";
     cin >> imageFileName;
@@ -123,10 +123,78 @@ void flip() {
 }
 
 void rotate() {
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
-            // do something with the image
+    unsigned char imageCopy[SIZE][SIZE];
+    unsigned char imageCopy2[SIZE][SIZE];
+    unsigned char imageCopy3[SIZE][SIZE];
+
+    int choice;
+    cout << "How many degrees do you want the image to be rotated? (90, 180, 270) ";
+    do {
+        cin >> choice;
+        if (choice != 90 && choice != 180 && choice != 270) {
+            cout << "Invalid Input. Try again. ";
         }
+    } while (choice != 90 && choice != 180 && choice != 270);
+
+    switch (choice) {
+        case 90:
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy[j][SIZE - i - 1] = image[i][j];
+                }
+            }
+            break;
+
+        case 180:
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy[j][SIZE - i - 1] = image[i][j];
+                }
+            }
+
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy2[j][SIZE - i - 1] = imageCopy[i][j];
+                }
+            }
+            break;
+
+        case 270:
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy[j][SIZE - i - 1] = image[i][j];
+                }
+            }
+
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy2[j][SIZE - i - 1] = imageCopy[i][j];
+                }
+            }
+
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy3[j][SIZE - i - 1] = imageCopy2[i][j];
+                }
+            }
+
+            break;
+        default:
+                break;
+    }
+
+    char imageCopyFileName[100];
+
+    cout << "Enter the target image file name: ";
+    cin >> imageCopyFileName;
+
+    strcat (imageCopyFileName, ".bmp");
+    if (choice == 90) {
+        writeGSBMP(imageCopyFileName, imageCopy);
+    } else if (choice == 180) {
+        writeGSBMP(imageCopyFileName, imageCopy2);
+    } else if (choice == 270) {
+        writeGSBMP(imageCopyFileName, imageCopy3);
     }
 }
 
@@ -175,7 +243,7 @@ void menu() {
             default:
                 break;
         }
-        if (choice != 7 && choice != 3) {
+        if (choice != 7 && choice != 3 && choice != 5) {
             saveImage();
         }
     } while (choice != 7);
