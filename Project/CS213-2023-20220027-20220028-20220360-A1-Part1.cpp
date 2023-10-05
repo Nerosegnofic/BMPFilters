@@ -14,16 +14,21 @@
 
 using namespace std;
 unsigned char image[SIZE][SIZE];
+unsigned char image2[SIZE][SIZE];
 
 void loadImage ();
 void saveImage ();
-void doSomethingForImage ();
+void menu();
+void BW();
+void invert();
+void merge();
+void flip();
+void rotate();
+void darken_and_lighten();
 
-int main()
-{
-  loadImage();
-  doSomethingForImage();
-  saveImage();
+
+int main() {
+  menu();
   return 0;
 }
 
@@ -54,20 +59,106 @@ void saveImage () {
 }
 
 //_________________________________________
-void doSomethingForImage() {
-  for (int i = 0; i < SIZE; i++) {
-    for (int j = 0; j< SIZE; j++) {
-
-/* Example code to convert to BW the image
-   A better version should NOt use 127 but the
-   average of the pixels
-
-        if (image[i][j] > 127)
-            image[i][j] = 255;
-        else
-            image[i][j] = 0;
-*/
-// do something with the image
+void BW() {
+    int avg {0};
+  for (int i {0}; i < SIZE; ++i) {
+    for (int j {0}; j < SIZE; ++j) {
+        avg += image[i][j];
     }
   }
+  avg /= SIZE * SIZE;
+
+  for (int i {0}; i < SIZE; ++i) {
+      for (int j {0}; j < SIZE; ++j) {
+          if (image[i][j] > avg) {
+              image[i][j] = 255;
+          } else {
+              image[i][j] = 0;
+          }
+      }
+  }
+}
+
+void invert() {
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = 255 - image[i][j];
+        }
+    }
+}
+
+void merge() {
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            // do something with the image
+        }
+    }
+}
+
+void flip() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j< SIZE; j++) {
+            // do something with the image
+        }
+    }
+}
+
+void rotate() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j< SIZE; j++) {
+            // do something with the image
+        }
+    }
+}
+
+void darken_and_lighten() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j< SIZE; j++) {
+
+        // do something with the image
+        }
+    }
+}
+
+void menu() {
+    int choice;
+    do {
+        loadImage();
+        cout << "What filter do you want to apply upon this image?\n";
+        cout << "=================================================\n";
+        cout << "1 - Black and White Image.\n"
+             << "2 - Invert Image.\n"
+             << "3 - Merge Two Images.\n"
+             << "4 - Flip Image.\n"
+             << "5 - Rotate Image.\n"
+             << "6 - Darken and Lighten Image.\n"
+             << "7 - Exit" << endl;
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                BW();
+                break;
+            case 2:
+                invert();
+                break;
+            case 3:
+                merge();
+                break;
+            case 4:
+                flip();
+                break;
+            case 5:
+                rotate();
+                break;
+            case 6:
+                darken_and_lighten();
+                break;
+            default:
+                break;
+        }
+        if (choice != 7) {
+            saveImage();
+        }
+    } while (choice != 7);
+
 }
