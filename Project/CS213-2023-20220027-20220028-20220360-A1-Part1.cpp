@@ -15,6 +15,8 @@
 using namespace std;
 unsigned char image[SIZE][SIZE];
 unsigned char image2[SIZE][SIZE];
+unsigned char image3[SIZE][SIZE];
+
 
 void loadImage ();
 void saveImage ();
@@ -88,11 +90,28 @@ void invert() {
 }
 
 void merge() {
+    char imageFileName[100];
+
+    cout << "Enter the second source image file name: ";
+    cin >> imageFileName;
+
+    strcat (imageFileName, ".bmp");
+    readGSBMP(imageFileName, image2);
+
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            // do something with the image
+            image3[i][j] = (image[i][j] + image2[i][j]) / 2;
         }
     }
+
+    char image3FileName[100];
+
+    cout << "Enter the target image file name: ";
+    cin >> image3FileName;
+
+    // Add to it .bmp extension and load image
+    strcat (image3FileName, ".bmp");
+    writeGSBMP(image3FileName, image3);
 }
 
 void flip() {
@@ -156,7 +175,7 @@ void menu() {
             default:
                 break;
         }
-        if (choice != 7) {
+        if (choice != 7 && choice != 3) {
             saveImage();
         }
     } while (choice != 7);
