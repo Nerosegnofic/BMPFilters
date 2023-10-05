@@ -1,12 +1,11 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
-// Program Name:			    demo2.cpp
-// Last Modification Date:	    10/5/2023
-// Author1 and ID and Group:	Nour-aldeen Alaa    20220360
-// Author2 and ID and Group:	xxxxx xxxxx
-// Author3 and ID and Group:	xxxxx xxxxx
-// Teaching Assistant:		xxxxx xxxxx
-// Purpose: Applying filters to images
-
+// Program Name:			    CS213-2023-20220027-20220028-20220360-A1-Part1.cpp
+// Last Modification Date:	    10/6/2023
+// Author1 and ID and Group:	Nour-aldeen Alaa            20220360 - To Be Determined
+// Author2 and ID and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - To Be Determined
+// Author3 and ID and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - To Be Determined
+// Teaching Assistant:		To Be Determined
+// Purpose: Applying Filters to 256x256 BMP Images
 
 #include <iostream>
 #include <fstream>
@@ -16,9 +15,6 @@
 
 using namespace std;
 unsigned char image[SIZE][SIZE];
-unsigned char image2[SIZE][SIZE];
-unsigned char image3[SIZE][SIZE];
-
 
 void loadImage ();
 void saveImage ();
@@ -29,7 +25,6 @@ void merge();
 void flip();
 void rotate();
 void darken_and_lighten();
-
 
 int main() {
     menu();
@@ -83,6 +78,7 @@ void BW() {
     }
 }
 
+//_________________________________________
 void invert() {
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
@@ -91,8 +87,11 @@ void invert() {
     }
 }
 
+//_________________________________________
 void merge() {
     char imageFileName[100];
+    unsigned char image2[SIZE][SIZE];
+    unsigned char image3[SIZE][SIZE];
 
     cout << "Enter the second source image file name: ";
     cin >> imageFileName;
@@ -116,14 +115,41 @@ void merge() {
     writeGSBMP(image3FileName, image3);
 }
 
+//_________________________________________
 void flip() {
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j< SIZE; j++) {
-            // do something with the image
+    cout << "Enter 'H' if you want to flip the image horizontally, otherwise enter 'V'\n";
+    char choice;
+    do {
+        cin >> choice;
+        if ((choice != 'H' || choice != 'h') && (choice != 'V' || choice != 'v')) {
+            cout << "Invalid input. Try again." << endl;
         }
+    } while ((choice != 'H' || choice != 'h') && (choice != 'V' || choice != 'v'));
+    switch (choice) {
+        case 'H':
+        case 'h':
+                for (int i {0}; i < SIZE; ++i) {
+                    for (int j{0}; j < SIZE / 2; ++j) {
+                        swap(image[i][j], image[i][SIZE - j - 1]);
+                    }
+                }
+                break;
+
+        case 'V':
+        case 'v':
+                for (int i {0}; i < SIZE / 2; ++i) {
+                    for (int j {0}; j < SIZE; ++j) {
+                        swap(image[i][j], image[SIZE - i - 1][j]);
+                    }
+                }
+                break;
+
+        default:
+                break;
     }
 }
 
+//_________________________________________
 void rotate() {
     unsigned char imageCopy[SIZE][SIZE];
     unsigned char imageCopy2[SIZE][SIZE];
@@ -200,8 +226,9 @@ void rotate() {
     }
 }
 
+//_________________________________________
 void darken_and_lighten() {
-    cout << "Do you want to (d)arken or (l)ighten?\n";
+    cout << "Do you want to (d)arken or (l)ighten? ";
     char choice;
     cin >> choice;
 
@@ -210,24 +237,25 @@ void darken_and_lighten() {
         //because as we know the pixel in gray-scale images are from zero(Black) to 255(White) bits
         //so decreasing the bits in the pixel make it more dark.
 
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
                 image[i][j] /= 2;
             }
         }
-    } else if(choice == 'l'){
+    } else if (choice == 'l') {
         //Same thing for making it more white, but this time you have to increase the number of bits in the pixel
 
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                double AmountOfIncrease = (255 - image[i][j])/2;
-                image[i][j] = image[i][j] + AmountOfIncrease;
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                double AmountOfIncrease = (255 - image[i][j]) / 2;
+                image[i][j] += AmountOfIncrease;
             }
 
         }
     }
 }
 
+//_________________________________________
 void menu() {
     int choice;
     do {
@@ -264,9 +292,8 @@ void menu() {
             default:
                 break;
         }
-        if (choice != 0 && choice != 3) {
+        if (choice != 0 && choice != 3 && choice != 5) {
             saveImage();
         }
     } while (choice != 0);
-
 }
