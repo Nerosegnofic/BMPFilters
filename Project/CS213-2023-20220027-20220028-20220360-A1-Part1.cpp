@@ -14,6 +14,7 @@
 #include "bmplib.cpp"
 
 using namespace std;
+
 unsigned char image[SIZE][SIZE];
 
 void loadImage ();
@@ -121,10 +122,10 @@ void flip() {
     char choice;
     do {
         cin >> choice;
-        if ((choice != 'H' || choice != 'h') && (choice != 'V' || choice != 'v')) {
+        if (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v') {
             cout << "Invalid input. Try again." << endl;
         }
-    } while ((choice != 'H' || choice != 'h') && (choice != 'V' || choice != 'v'));
+    } while (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v');
     switch (choice) {
         case 'H':
         case 'h':
@@ -165,6 +166,9 @@ void rotate() {
     } while (choice != 90 && choice != 180 && choice != 270);
 
     switch (choice) {
+        /*First pixels row of original image is the last pixels column of resulting image,
+         * and second pixels row of original image is the second last pixels column of resulting image,
+         * and so on until the last pixels row of original image is the first pixels column of resulting image.*/
         case 90:
             for (int i {0}; i < SIZE; ++i) {
                 for (int j {0}; j < SIZE; ++j) {
@@ -247,7 +251,7 @@ void darken_and_lighten() {
 
         for (int i {0}; i < SIZE; ++i) {
             for (int j {0}; j < SIZE; ++j) {
-                double AmountOfIncrease = (255 - image[i][j]) / 2;
+                double AmountOfIncrease = (255.0 - image[i][j]) / 2;
                 image[i][j] += AmountOfIncrease;
             }
 
