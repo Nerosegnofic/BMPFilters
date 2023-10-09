@@ -118,8 +118,10 @@ void merge() {
 
 //_________________________________________
 void flip() {
+   // ask the user about the way to flip the image (vertically or horizontally)
     cout << "Enter 'H' if you want to flip the image horizontally, otherwise enter 'V'\n";
     char choice;
+   // check receiving a valid option
     do {
         cin >> choice;
         if (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v') {
@@ -127,6 +129,7 @@ void flip() {
         }
     } while (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v');
     switch (choice) {
+        // if horizontally go through each row and swap each coloumn from the left with its counterpart from the right
         case 'H':
         case 'h':
                 for (int i {0}; i < SIZE; ++i) {
@@ -135,7 +138,7 @@ void flip() {
                     }
                 }
                 break;
-
+         // if vertically go through each coloumn and swap each row from the left with it counterpart from the right
         case 'V':
         case 'v':
                 for (int i {0}; i < SIZE / 2; ++i) {
