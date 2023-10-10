@@ -1,9 +1,9 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
 // Program Name:			    CS213-2023-20220027-20220028-20220360-A1-Part1.cpp
 // Last Modification Date:	    10/6/2023
-// Author1 and ID and Group:	Nour-aldeen Alaa            20220360 - To Be Determined
-// Author2 and ID and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - To Be Determined
-// Author3 and ID and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - To Be Determined
+// Author1 and ID, Email, and Group:	Nour-aldeen Alaa            20220360 - nouralaa2279@gmail.com -  To Be Determined
+// Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  To Be Determined
+// Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  To Be Determined
 // Teaching Assistant:		To Be Determined
 // Purpose: Applying Filters to 256x256 BMP Images
 
@@ -118,10 +118,10 @@ void merge() {
 
 //_________________________________________
 void flip() {
-   // ask the user about the way to flip the image (vertically or horizontally)
+    // ask the user about the way to flip the image (vertically or horizontally)
     cout << "Enter 'H' if you want to flip the image horizontally, otherwise enter 'V'\n";
     char choice;
-   // check receiving a valid option
+    // check receiving a valid option
     do {
         cin >> choice;
         if (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v') {
@@ -132,24 +132,24 @@ void flip() {
         // if horizontally go through each row and swap each coloumn from the left with its counterpart from the right
         case 'H':
         case 'h':
-                for (int i {0}; i < SIZE; ++i) {
-                    for (int j{0}; j < SIZE / 2; ++j) {
-                        swap(image[i][j], image[i][SIZE - j - 1]);
-                    }
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j{0}; j < SIZE / 2; ++j) {
+                    swap(image[i][j], image[i][SIZE - j - 1]);
                 }
-                break;
-         // if vertically go through each coloumn and swap each row from the left with it counterpart from the right
+            }
+            break;
+            // if vertically go through each coloumn and swap each row from the left with it counterpart from the right
         case 'V':
         case 'v':
-                for (int i {0}; i < SIZE / 2; ++i) {
-                    for (int j {0}; j < SIZE; ++j) {
-                        swap(image[i][j], image[SIZE - i - 1][j]);
-                    }
+            for (int i {0}; i < SIZE / 2; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    swap(image[i][j], image[SIZE - i - 1][j]);
                 }
-                break;
+            }
+            break;
 
         default:
-                break;
+            break;
     }
 }
 
