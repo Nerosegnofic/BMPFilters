@@ -127,7 +127,7 @@ void merge() {
 //_________________________________________
 void flip() {
     // ask the user about the way to flip the image (vertically or horizontally)
-    cout << "Enter 'H' if you want to flip the image horizontally, otherwise enter 'V'\n";
+    cout << "Enter 'H' if you want to flip the image horizontally, otherwise enter 'V'" << endl;
     char choice;
     // check receiving a valid option
     do {
@@ -168,11 +168,11 @@ void rotate() {
     unsigned char imageCopy3[SIZE][SIZE];
 
     int choice;
-    cout << "How many degrees do you want the image to be rotated? (90, 180, 270) ";
+    cout << "How many degrees do you want the image to be rotated? (90, 180, 270)" << endl;
     do {
         cin >> choice;
         if (choice != 90 && choice != 180 && choice != 270) {
-            cout << "Invalid Input. Try again. ";
+            cout << "Invalid Input. Try again." << endl;
         }
     } while (choice != 90 && choice != 180 && choice != 270);
 
@@ -243,16 +243,16 @@ void rotate() {
 
 //_________________________________________
 void darken_and_lighten() {
-    cout << "Do you want to (d)arken or (l)ighten? ";
+    cout << "Do you want to (d)arken or (l)ighten?" << endl;
     char choice;
     do {
         cin >> choice;
-        if (choice != 'd' && choice != 'l') {
+        if (choice != 'd' && choice != 'D' && choice != 'l' && choice != 'L') {
             cout << "Invalid Input. Try again. ";
         }
-    } while (choice != 'd' && choice != 'l');
+    } while (choice != 'd' && choice != 'D' && choice != 'l' && choice != 'L');
 
-    if (choice == 'd') {
+    if (choice == 'd' || choice == 'D') {
         //To make the image darker by 50%, you have to decrease the number of bits in the pixel by half
         //because as we know the pixel in gray-scale images are from zero(Black) to 255(White) bits
         //so decreasing the bits in the pixel make it more dark.
@@ -262,7 +262,7 @@ void darken_and_lighten() {
                 image[i][j] /= 2;
             }
         }
-    } else if (choice == 'l') {
+    } else if (choice == 'l' || choice == 'L') {
         //Same thing for making it more white, but this time you have to increase the number of bits in the pixel
 
         for (int i {0}; i < SIZE; ++i) {
@@ -359,6 +359,17 @@ void shrink() {
 
 //_________________________________________
 void mirror() {
+    unsigned char half_image[256][128];
+    char choice;
+
+    cout << "Which part do you want to mirror? (L)eft, (R)ight, (U)p, or (D)own?";
+    do {
+        cin >> choice;
+        if (choice != 'd' && choice != 'l') {
+            cout << "Invalid Input. Try again. ";
+        }
+    } while (choice != 'd' && choice != 'l');
+
 
 }
 
