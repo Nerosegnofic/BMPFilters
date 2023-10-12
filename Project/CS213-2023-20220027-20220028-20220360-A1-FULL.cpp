@@ -26,6 +26,14 @@ void merge();
 void flip();
 void rotate();
 void darken_and_lighten();
+void detect_edges();
+void enlarge();
+void shrink();
+void mirror();
+void shuffle();
+void blur();
+void crop();
+void skew();
 
 int main() {
     menu();
@@ -129,7 +137,7 @@ void flip() {
         }
     } while (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v');
     switch (choice) {
-        // if horizontally go through each row and swap each coloumn from the left with its counterpart from the right
+        // if horizontally go through each row and swap each column from the left with its counterpart from the right
         case 'H':
         case 'h':
             for (int i {0}; i < SIZE; ++i) {
@@ -138,7 +146,7 @@ void flip() {
                 }
             }
             break;
-            // if vertically go through each coloumn and swap each row from the left with it counterpart from the right
+            // if vertically go through each column and swap each row from the left with it counterpart from the right
         case 'V':
         case 'v':
             for (int i {0}; i < SIZE / 2; ++i) {
@@ -237,7 +245,12 @@ void rotate() {
 void darken_and_lighten() {
     cout << "Do you want to (d)arken or (l)ighten? ";
     char choice;
-    cin >> choice;
+    do {
+        cin >> choice;
+        if (choice != 'd' && choice != 'l') {
+            cout << "Invalid Input. Try again. ";
+        }
+    } while (choice != 'd' && choice != 'l');
 
     if (choice == 'd') {
         //To make the image darker by 50%, you have to decrease the number of bits in the pixel by half
@@ -263,18 +276,133 @@ void darken_and_lighten() {
 }
 
 //_________________________________________
+void detect_edges() {
+
+}
+
+//_________________________________________
+void enlarge() {
+    unsigned char quarter_image[128][128];
+    unsigned char enlarged_image[SIZE][SIZE];
+
+    // ask the user which quarter they want to enlarge
+    cout << "Which quarter do you want to enlarge?" << endl;
+    int choice;
+    do {
+        cin >> choice;
+        if (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
+            cout << "Invalid Input. Try again. ";
+        }
+    } while (choice != 1 && choice != 2 && choice != 3 && choice != 4);
+
+    switch (choice) {
+        case 1:
+            for (int i {0}; i < 128 ; ++i) {
+                for (int j{0}; j < 128; ++j) {
+                    quarter_image[i][j] = image[i][j];
+                }
+            }
+            break;
+
+        case 2:
+            for (int i {0}; i < 128; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j] = image[i][j + 128];
+                }
+            }
+            break;
+
+        case 3:
+            for (int i {0}; i < 128; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j] = image[i + 128][j];
+                }
+            }
+            break;
+
+        case 4:
+            for (int i {}; i < 128; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j] = image[i + 128][j + 128];
+                }
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    for(int i {0}, x {0}; i < SIZE; ++++i, ++x) {
+        for (int j {0}, y {0}; j < SIZE; ++ ++j, ++y) {
+            enlarged_image[i][j]
+                    = enlarged_image[i + 1][j]
+                    = enlarged_image[i][j + 1]
+                    = enlarged_image[i + 1][j + 1]
+                    = quarter_image[x][y];
+        }
+    }
+
+    char imageCopyFileName[100];
+
+    cout << "Enter the target image file name: ";
+    cin >> imageCopyFileName;
+
+    strcat(imageCopyFileName, ".bmp");
+    writeGSBMP(imageCopyFileName, enlarged_image);
+
+}
+
+//_________________________________________
+void shrink() {
+
+}
+
+//_________________________________________
+void mirror() {
+
+}
+
+//_________________________________________
+void shuffle() {
+
+}
+
+//_________________________________________
+void blur() {
+
+}
+
+//_________________________________________
+void crop() {
+
+}
+
+//_________________________________________
+void skew() {
+
+}
+
+//_________________________________________
 void menu() {
     int choice;
     do {
         loadImage();
         cout << "What filter do you want to apply upon this image?\n";
         cout << "=================================================\n";
-        cout << "1 - Black and White Image.\n"
-             << "2 - Invert Image.\n"
-             << "3 - Merge Two Images.\n"
-             << "4 - Flip Image.\n"
-             << "5 - Rotate Image.\n"
-             << "6 - Darken and Lighten Image.\n"
+        cout << "1  - Black and White Image.\n"
+             << "2  - Invert Image.\n"
+             << "3  - Merge Two Images.\n"
+             << "4  - Flip Image.\n"
+             << "5  - Rotate Image.\n"
+             << "6  - Darken and Lighten Image.\n"
+             << "7  - Detect Image Edges."
+             << "8  - Enlarge Image.\n"
+             << "9  - Shrink Image.\n"
+             << "10 - Mirror Image.\n"
+             << "11 - Shuffle Image.\n"
+             << "12 - Blur Image.\n"
+             << "13 - Crop Image.\n"
+             << "14 - Skew Image.\n"
              << "0 - Exit" << endl;
         cin >> choice;
         switch (choice) {
@@ -296,10 +424,34 @@ void menu() {
             case 6:
                 darken_and_lighten();
                 break;
+            case 7:
+                detect_edges();
+                break;
+            case 8:
+                enlarge();
+                break;
+            case 9:
+                shrink();
+                break;
+            case 10:
+                mirror();
+                break;
+            case 11:
+                shuffle();
+                break;
+            case 12:
+                blur();
+                break;
+            case 13:
+                crop();
+                break;
+            case 14:
+                skew();
+                break;
             default:
                 break;
         }
-        if (choice != 0 && choice != 3 && choice != 5) {
+        if (choice != 0 && choice != 3 && choice != 5 && choice != 8) {
             saveImage();
         }
     } while (choice != 0);
