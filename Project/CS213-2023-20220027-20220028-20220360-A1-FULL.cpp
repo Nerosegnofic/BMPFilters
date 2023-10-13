@@ -355,7 +355,78 @@ void enlarge() {
 
 //_________________________________________
 void shrink() {
+    cout << "Shrink to: a) 1/2, b) 1/3 or c) 1/4 ?\n";
+    char ans;
+    cin >> ans;
+    unsigned char Shrinked_image[SIZE][SIZE];
+    if(ans == 'a'){
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                Shrinked_image[i][j] = 255;
+            }
+        }
+        //Shrinking by half means we want each pixel to have two pixels of the original image
+        //and since the pixel is a row and a column, then we want two pixels from the rows, and two from the columns
+        //Example to make it clear: suppose we have an 8*8 bitmap, and we want to shrink it by half (4*4)
+        //then the first pixel will have these indices (row,col): { (0,0), (0,1), (1,0), (1,1) }, we'll take the average of these pixels
+        //so in the end each pixel in the shrinked image will have that 2*2 square
 
+        for (int i = 0, x = 0; i < SIZE; i+=2, x++){
+            for (int j = 0, y = 0; j < SIZE; j+=2, y++) {
+                Shrinked_image[x][y] = (double)(image[i][j] + image[i][j+1] + image[i+1][j] + image[i+1][j+1])/4.0;
+            }
+        }
+
+        char imageFileName[100];
+        cout << "Enter the target image file name: ";
+        cin >> imageFileName;
+        strcat (imageFileName, ".bmp");
+        writeGSBMP(imageFileName, Shrinked_image);
+
+    }
+    else if(ans == 'b'){
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                Shrinked_image[i][j] = 255;
+            }
+        }
+        //shrinking by 1/3 means taking the average of the 9 adjacent pixels
+        for (int i = 1, x = 0; i < SIZE; i+=3, x++){
+            for (int j = 1, y = 0; j < SIZE; j+=3, y++) {
+                Shrinked_image[x][y] = (image[i][j] + image[i][j+1] + image[i][j - 1] + image[i+1][j] + image[i+1][j+1] + image[i+1][j - 1] + image[i - 1][j] + image[i - 1][j+1] + image[i - 1][j - 1])/9;
+            }
+        }
+
+        char imageFileName[100];
+        cout << "Enter the target image file name: ";
+        cin >> imageFileName;
+        strcat (imageFileName, ".bmp");
+        writeGSBMP(imageFileName, Shrinked_image);
+
+    }
+    else if(ans == 'c'){
+        for (int i = 0; i < SIZE; ++i) {
+            for (int j = 0; j < SIZE; ++j) {
+                Shrinked_image[i][j] = 255;
+            }
+        }
+        //shrinking by 1/4 means taking the average of the 16 adjacent pixels
+        for (int i = 0, x = 0; i < SIZE; i+=4, x++){
+            for (int j = 0, y = 0; j < SIZE; j+=4, y++) {
+                Shrinked_image[x][y] = (image[i][j] + image[i][j+1] + image[i][j+2] + image[i][j+3]
+                        + image[i+1][j] + image[i+1][j+1] + image[i+1][j+2] + image[i+1][j+3]
+                        + image[i+2][j] + image[i+2][j+1] + image[i+2][j+2] + image[i+2][j+3]
+                        + image[i+3][j] + image[i+3][j+1] + image[i+3][j+2] + image[i+3][j+3])/16;
+            }
+        }
+
+        char imageFileName[100];
+        cout << "Enter the target image file name: ";
+        cin >> imageFileName;
+        strcat (imageFileName, ".bmp");
+        writeGSBMP(imageFileName, Shrinked_image);
+
+    }
 }
 
 //_________________________________________
