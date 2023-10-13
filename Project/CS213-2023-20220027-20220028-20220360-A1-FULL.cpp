@@ -291,7 +291,7 @@ void enlarge() {
     do {
         cin >> choice;
         if (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
-            cout << "Invalid Input. Try again. ";
+            cout << "Invalid Input. Try again." << endl;
         }
     } while (choice != 1 && choice != 2 && choice != 3 && choice != 4);
 
@@ -349,7 +349,6 @@ void enlarge() {
 
     strcat(imageCopyFileName, ".bmp");
     writeGSBMP(imageCopyFileName, enlarged_image);
-
 }
 
 //_________________________________________
@@ -359,18 +358,56 @@ void shrink() {
 
 //_________________________________________
 void mirror() {
-    unsigned char half_image[256][128];
     char choice;
 
-    cout << "Which part do you want to mirror? (L)eft, (R)ight, (U)p, or (D)own?";
+    cout << "Which part do you want to mirror? (L)eft, (R)ight, (U)p, or (D)own?" << endl;
     do {
         cin >> choice;
-        if (choice != 'd' && choice != 'l') {
-            cout << "Invalid Input. Try again. ";
+        if (choice != 'l' && choice != 'L' && choice != 'r' && choice != 'R' && choice != 'u' && choice != 'U' && choice != 'd' && choice != 'D') {
+            cout << "Invalid Input. Try again." << endl;
         }
-    } while (choice != 'd' && choice != 'l');
+    } while (choice != 'l' && choice != 'L' && choice != 'r' && choice != 'R' && choice != 'u' && choice != 'U' && choice != 'd' && choice != 'D');
 
+    // Put every pixel on its opposite side of the image depending on user choice
+    switch (choice) {
+        case 'l':
+        case 'L':
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE / 2; ++j) {
+                    image[i][SIZE - j - 1] = image[i][j];
+                }
+            }
+            break;
 
+        case 'r':
+        case 'R':
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {255}; j >= SIZE / 2; --j) {
+                    image[i][SIZE - j - 1] = image[i][j];
+                }
+            }
+            break;
+
+        case 'u':
+        case 'U':
+            for (int i {0}; i < SIZE / 2; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    image[SIZE - i - 1][j] = image[i][j];
+                }
+            }
+            break;
+
+        case 'd':
+        case 'D':
+            for (int i {255}; i >= SIZE / 2; --i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    image[SIZE - i - 1][j] = image[i][j];
+                }
+            }
+
+        default:
+            break;
+    }
 }
 
 //_________________________________________
@@ -385,7 +422,44 @@ void blur() {
 
 //_________________________________________
 void crop() {
+    int x, y, l, w;
+    cout << "Enter x, y position." << endl;
+    do {
+        cin >> x >> y;
+        if (x < 0 || x > 255 || y < 0 || y > 255) {
+            cout << "Invalid Input. Try again." << endl;
+        }
+    } while (x < 0 || x > 255 || y < 0 || y > 255);
 
+    cout << "Enter length and width." << endl;
+    do {
+        cin >> l >> w;
+        if ((x + l - 1) > 255 || (x + l - 1) < 0 || (y + w - 1) > 255 || (y + w - 1) < 0) {
+            cout << "Invalid Input. Try again." << endl;
+        }
+    } while ((x + l - 1) > 255 || (x + l - 1) < 0 || (y + w - 1) > 255 || (y + w - 1) < 0);
+    
+    unsigned char cropped_image[SIZE][SIZE];
+    
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            cropped_image[i][j] = 255;
+        }
+    }
+    
+    for (int i {x}; i < x + l; ++i) {
+        for (int j {y}; j < y + w; ++j) {
+            cropped_image[i][j] = image[i][j];
+        }
+    }
+
+    char imageCopyFileName[100];
+
+    cout << "Enter the target image file name: ";
+    cin >> imageCopyFileName;
+
+    strcat(imageCopyFileName, ".bmp");
+    writeGSBMP(imageCopyFileName, cropped_image);
 }
 
 //_________________________________________
@@ -406,7 +480,7 @@ void menu() {
              << "4  - Flip Image.\n"
              << "5  - Rotate Image.\n"
              << "6  - Darken and Lighten Image.\n"
-             << "7  - Detect Image Edges."
+             << "7  - Detect Image Edges.\n"
              << "8  - Enlarge Image.\n"
              << "9  - Shrink Image.\n"
              << "10 - Mirror Image.\n"
@@ -462,7 +536,7 @@ void menu() {
             default:
                 break;
         }
-        if (choice != 0 && choice != 3 && choice != 5 && choice != 8) {
+        if (choice != 0 && choice != 3 && choice != 5 && choice != 8 && choice != 13) {
             saveImage();
         }
     } while (choice != 0);
