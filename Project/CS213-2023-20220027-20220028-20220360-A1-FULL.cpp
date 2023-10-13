@@ -8,6 +8,8 @@
 // Purpose: Applying Filters to 256x256 BMP Images
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include <fstream>
 #include <cstring>
 #include <cmath>
@@ -412,12 +414,118 @@ void mirror() {
 
 //_________________________________________
 void shuffle() {
+    vector<vector<vector<int>>> quarters(4, vector<vector<int>> (128, vector<int>(128)));
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[0][i][j] = image[i][j];
+        }
+    }
 
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[1][i][j] = image[i][j + 128];
+        }
+    }
+
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[2][i][j] = image[i + 128][j];
+        }
+    }
+
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[3][i][j] = image[i + 128][j + 128];
+        }
+    }
+
+    int first_quarter, second_quarter, third_quarter, fourth_quarter;
+    cout << "Enter your input." << endl;
+    cin >> first_quarter >> second_quarter >> third_quarter >> fourth_quarter;
+
+    --first_quarter;
+    --second_quarter;
+    --third_quarter;
+    --fourth_quarter;
+
+    vector<int> check_valid {first_quarter, second_quarter, third_quarter, fourth_quarter};
+
+    sort(check_valid.begin(), check_valid.end());
+    for (int i {0}; i < 4; ++i) {
+        if (check_valid[i] != i) {
+            return void(cout << "Invalid input. Try again.\n");
+        }
+    }
+
+    unsigned char shuffled_image[SIZE][SIZE];
+
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            shuffled_image[i][j] = quarters[first_quarter][i][j];
+        }
+    }
+
+    for(int i {0}; i < 128; ++i) {
+        for (int j {128}; j < SIZE; ++j) {
+            shuffled_image[i][j] = quarters[second_quarter][i][j - 128];
+        }
+    }
+
+    for (int i {128}; i < SIZE; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            shuffled_image[i][j] = quarters[third_quarter][i - 128][j];
+        }
+    }
+
+    for (int i {128}; i < SIZE; ++i) {
+        for (int j {128}; j < SIZE; ++j) {
+            shuffled_image[i][j] = quarters[fourth_quarter][i - 128][j - 128];
+        }
+    }
+
+    char imageCopyFileName[100];
+
+    cout << "Enter the target image file name: ";
+    cin >> imageCopyFileName;
+
+    strcat(imageCopyFileName, ".bmp");
+    writeGSBMP(imageCopyFileName, shuffled_image);
 }
 
 //_________________________________________
 void blur() {
+    unsigned char imageCopy[SIZE][SIZE];
 
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            imageCopy[i][j] = image[i][j];
+        }
+    }
+
+    // Get the average of all adjacent pixels of every pixel
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            if (i == 0 && j == 0) {
+                image[0][0] = (imageCopy[0][0] + imageCopy[0][1] + imageCopy[1][0] + imageCopy[1][1]) / 4;
+            } else if (i == 0 && j == 255) {
+                image[0][255] = (imageCopy[0][255] + imageCopy[1][255] + imageCopy[1][254] + imageCopy[1][254]) / 4;
+            } else if (i == 255 && j == 0) {
+                image[255][0] = (imageCopy[255][0] + imageCopy[255][1] + imageCopy[254][0] + imageCopy[254][1]) / 4;
+            } else if (i == 255 && j == 255) {
+                image[255][255] = (imageCopy[255][255] + imageCopy[255][254] + imageCopy[254][255] + imageCopy[254][254]) / 4;
+            } else if (i == 0) {
+                image[0][j] = (imageCopy[0][j] + imageCopy[0][j - 1] + imageCopy[0][j + 1] + imageCopy[1][j] + imageCopy[1][j - 1] + imageCopy[1][j + 1]) / 6;
+            } else if (i == 255) {
+                image[255][j] = (imageCopy[255][j] + imageCopy[255][j - 1] + imageCopy[255][j + 1] + imageCopy[254][j] + imageCopy[254][j - 1] + imageCopy[254][j + 1]) / 6;
+            } else if (j == 0) {
+                image[i][0] = (imageCopy[i][0] + imageCopy[i + 1][0] + imageCopy[i - 1][0] + imageCopy[i][1] + imageCopy[i + 1][1] + imageCopy[i - 1][1]) / 6;
+            } else if (j == 255) {
+                image[i][255] = (imageCopy[i][255] + imageCopy[i + 1][255] + imageCopy[i - 1][255] + imageCopy[i][254] + imageCopy[i + 1][254] + imageCopy[i - 1][254]) / 6;
+            } else {
+                image[i][j] = (image[i][j] + image[i][j + 1] + image[i][j - 1] + image[i - 1][j - 1] + image[i - 1][j] + image[i - 1][j + 1] + image[i + 1][j - 1] + image[i + 1][j] + image[i + 1][j + 1]) / 9;
+            }
+        }
+    }
 }
 
 //_________________________________________
@@ -438,15 +546,15 @@ void crop() {
             cout << "Invalid Input. Try again." << endl;
         }
     } while ((x + l - 1) > 255 || (x + l - 1) < 0 || (y + w - 1) > 255 || (y + w - 1) < 0);
-    
+
     unsigned char cropped_image[SIZE][SIZE];
-    
+
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
             cropped_image[i][j] = 255;
         }
     }
-    
+
     for (int i {x}; i < x + l; ++i) {
         for (int j {y}; j < y + w; ++j) {
             cropped_image[i][j] = image[i][j];
@@ -536,7 +644,7 @@ void menu() {
             default:
                 break;
         }
-        if (choice != 0 && choice != 3 && choice != 5 && choice != 8 && choice != 13) {
+        if (choice != 0 && choice != 3 && choice != 5 && choice != 8 && choice != 13 && choice != 11) {
             saveImage();
         }
     } while (choice != 0);
