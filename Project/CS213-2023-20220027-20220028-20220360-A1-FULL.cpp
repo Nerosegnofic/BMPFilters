@@ -279,6 +279,49 @@ void darken_and_lighten() {
 
 //_________________________________________
 void detect_edges() {
+      /*
+     * Detecting Edges has many algorithms, here we'll do the sobel operator algorithm
+     * This algorithm uses a 3*3 matrix with negative and positive same values and zeroes in the middle
+     * we multiply the adjacents of each index in the original image by these values to know if there is a change
+     * in the intensity of the picture happening or not, we do it vertically and horizontally
+     * then we calculate the gradient and if its bigger than the threshold value then it is an edge
+     *
+     * NOTE: the threshold value is a value that you decide depending on whether you want the edges to be clear and a lot
+     * or you want a light simple edges.
+     * Make sure you search more on the algorithm to understand it better if you found struggle with the code
+     */
+    unsigned char EdgedImage[SIZE][SIZE];
+    for (int i = 0; i < SIZE; ++i) {
+        for (int j = 0; j < SIZE; ++j) {
+            if(i == 0 || j == 0 || i == SIZE - 1 || j == SIZE - 1){ //if it is a corner, make it the same as the original pixel
+                EdgedImage[i][j] = image[i][j];
+                continue;
+            }
+            //Vertical change is the change in intensity in the x-axis
+            int VerticalChange = (image[i-1][j-1]*-1) + (image[i][j-1]*-2) + (image[i+1][j-1]*-1)
+                    + (image[i-1][j+1]) + (image[i][j+1]*2) + (image[i+1][j+1]);
+            
+            //Horizontal change is the change in intensity in the y-axis
+            int HorizontalChange = (image[i-1][j-1]*-1) + (image[i-1][j]*-2) + (image[i-1][j+1]*-1)
+                                   + (image[i+1][j-1]) + (image[i+1][j]*2) + (image[i+1][j+1]);
+            
+            //The gradient of these two changes will give us a value to determine by it the centered pixel if it is an edge or not
+            //We do that by comparing this gradient value by a threshold value
+            int gradient = (int)(round(sqrt( (VerticalChange*VerticalChange) + (HorizontalChange*HorizontalChange))));
+            if(gradient > 180){ //if its bigger we'll consider it an edge so we make the pixel black
+                EdgedImage[i][j] = 0;
+            }
+            else
+                EdgedImage[i][j] = 255;
+        }
+    }
+    char imageFileName[100];
+    cout << "Enter the target image file name: ";
+    cin >> imageFileName;
+
+    // Add to it .bmp extension and load image
+    strcat (imageFileName, ".bmp");
+    writeGSBMP(imageFileName, EdgedImage);
 
 }
 
