@@ -404,10 +404,10 @@ void shrink() {
     cout << "Shrink to: a) 1/2, b) 1/3 or c) 1/4?" << endl;
     do {
         cin >> answer;
-        if (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C' && answer != 'd' && answer != 'D') {
+        if (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C') {
             cout << "Invalid input. Try again." << endl;
         }
-    } while (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C' && answer != 'd' && answer != 'D');
+    } while (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C');
 
     if (answer == 'a' || answer == 'A') {
         for (int i {0}; i < SIZE; ++i) {
