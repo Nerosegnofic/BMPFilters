@@ -327,16 +327,16 @@ void detect_edges() {
                 continue;
             }
             //Vertical change is the change in intensity in the x-axis
-            int VerticalChange = (image[i-1][j-1]*-1) + (image[i][j-1]*-2) + (image[i+1][j-1]*-1)
-                                 + (image[i-1][j+1]) + (image[i][j+1]*2) + (image[i+1][j+1]);
+            int VerticalChange = (image[i - 1][j - 1] * -1) + (image[i][j - 1] * -2) + (image[i + 1][j - 1] * -1)
+                                 + (image[i - 1][j + 1]) + (image[i][j + 1] * 2) + (image[i + 1][j + 1]);
 
             //Horizontal change is the change in intensity in the y-axis
-            int HorizontalChange = (image[i-1][j-1]*-1) + (image[i-1][j]*-2) + (image[i-1][j+1]*-1)
-                                   + (image[i+1][j-1]) + (image[i+1][j]*2) + (image[i+1][j+1]);
+            int HorizontalChange = (image[i - 1][j - 1] * -1) + (image[i - 1][j] * -2) + (image[i - 1][j + 1] * -1)
+                                   + (image[i + 1][j - 1]) + (image[i + 1][j] * 2) + (image[i + 1][j + 1]);
 
             //The gradient of these two changes will give us a value to determine by it the centered pixel if it is an edge or not
             //We do that by comparing this gradient value by a threshold value
-            int gradient = (int)(round(sqrt( (VerticalChange*VerticalChange) + (HorizontalChange*HorizontalChange))));
+            int gradient = (int)(round(sqrt( (VerticalChange * VerticalChange) + (HorizontalChange * HorizontalChange))));
             if (gradient > 180) { //if its bigger we'll consider it an edge so we make the pixel black
                 edgedImage[i][j] = 0;
             } else {
@@ -707,8 +707,35 @@ void crop() {
 }
 
 //_________________________________________
-void skew() {
-
+void skew(){
+    double rad;
+    cin >> rad;
+    rad = (rad * 22) / (180 * 7);
+    double mov = tan(rad) * 256;
+    double step = mov / SIZE; 
+    unsigned char img_in[SIZE][SIZE + (int)mov];
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            img_in[i][j] = 255;
+        }
+    }
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            img_in[i][j + (int)mov] = image[i][j];
+        }
+        mov -= step;
+    }
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j){
+            image[i][j] = img_in[i][j];
+        }
+    }
+    
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
+        }
+    }
 }
 
 //_________________________________________
