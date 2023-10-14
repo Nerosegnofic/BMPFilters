@@ -116,14 +116,11 @@ void merge() {
         }
     }
 
-    char image3FileName[100];
-
-    cout << "Enter the target image file name: ";
-    cin >> image3FileName;
-
-    // Add to it .bmp extension and load image
-    strcat (image3FileName, ".bmp");
-    writeGSBMP(image3FileName, image3);
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = image3[i][j];
+        }
+    }
 }
 
 //_________________________________________
@@ -174,7 +171,7 @@ void rotate() {
     do {
         cin >> choice;
         if (choice != 90 && choice != 180 && choice != 270) {
-            cout << "Invalid Input. Try again." << endl;
+            cout << "Invalid input. Try again." << endl;
         }
     } while (choice != 90 && choice != 180 && choice != 270);
 
@@ -228,18 +225,24 @@ void rotate() {
             break;
     }
 
-    char imageCopyFileName[100];
-
-    cout << "Enter the target image file name: ";
-    cin >> imageCopyFileName;
-
-    strcat (imageCopyFileName, ".bmp");
     if (choice == 90) {
-        writeGSBMP(imageCopyFileName, imageCopy);
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                image[i][j] = imageCopy[i][j];
+            }
+        }
     } else if (choice == 180) {
-        writeGSBMP(imageCopyFileName, imageCopy2);
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                image[i][j] = imageCopy2[i][j];
+            }
+        }
     } else if (choice == 270) {
-        writeGSBMP(imageCopyFileName, imageCopy3);
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                image[i][j] = imageCopy3[i][j];
+            }
+        }
     }
 }
 
@@ -250,7 +253,7 @@ void darken_and_lighten() {
     do {
         cin >> choice;
         if (choice != 'd' && choice != 'D' && choice != 'l' && choice != 'L') {
-            cout << "Invalid Input. Try again. ";
+            cout << "Invalid input. Try again." << endl;
         }
     } while (choice != 'd' && choice != 'D' && choice != 'l' && choice != 'L');
 
@@ -279,50 +282,49 @@ void darken_and_lighten() {
 
 //_________________________________________
 void detect_edges() {
-      /*
-     * Detecting Edges has many algorithms, here we'll do the sobel operator algorithm
-     * This algorithm uses a 3*3 matrix with negative and positive same values and zeroes in the middle
-     * we multiply the adjacents of each index in the original image by these values to know if there is a change
-     * in the intensity of the picture happening or not, we do it vertically and horizontally
-     * then we calculate the gradient and if its bigger than the threshold value then it is an edge
-     *
-     * NOTE: the threshold value is a value that you decide depending on whether you want the edges to be clear and a lot
-     * or you want a light simple edges.
-     * Make sure you search more on the algorithm to understand it better if you found struggle with the code
-     */
-    unsigned char EdgedImage[SIZE][SIZE];
-    for (int i = 0; i < SIZE; ++i) {
-        for (int j = 0; j < SIZE; ++j) {
-            if(i == 0 || j == 0 || i == SIZE - 1 || j == SIZE - 1){ //if it is a corner, make it the same as the original pixel
-                EdgedImage[i][j] = image[i][j];
+    /*
+   * Detecting Edges has many algorithms, here we'll do the sobel operator algorithm
+   * This algorithm uses a 3*3 matrix with negative and positive same values and zeroes in the middle
+   * we multiply the adjacents of each index in the original image by these values to know if there is a change
+   * in the intensity of the picture happening or not, we do it vertically and horizontally
+   * then we calculate the gradient and if its bigger than the threshold value then it is an edge
+   *
+   * NOTE: the threshold value is a value that you decide depending on whether you want the edges to be clear and a lot
+   * or you want a light simple edges.
+   * Make sure you search more on the algorithm to understand it better if you found struggle with the code
+   */
+    unsigned char edgedImage[SIZE][SIZE];
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            if (i == 0 || j == 0 || i == SIZE - 1 || j == SIZE - 1){ //if it is a corner, make it the same as the original pixel
+                edgedImage[i][j] = image[i][j];
                 continue;
             }
             //Vertical change is the change in intensity in the x-axis
             int VerticalChange = (image[i-1][j-1]*-1) + (image[i][j-1]*-2) + (image[i+1][j-1]*-1)
-                    + (image[i-1][j+1]) + (image[i][j+1]*2) + (image[i+1][j+1]);
-            
+                                 + (image[i-1][j+1]) + (image[i][j+1]*2) + (image[i+1][j+1]);
+
             //Horizontal change is the change in intensity in the y-axis
             int HorizontalChange = (image[i-1][j-1]*-1) + (image[i-1][j]*-2) + (image[i-1][j+1]*-1)
                                    + (image[i+1][j-1]) + (image[i+1][j]*2) + (image[i+1][j+1]);
-            
+
             //The gradient of these two changes will give us a value to determine by it the centered pixel if it is an edge or not
             //We do that by comparing this gradient value by a threshold value
             int gradient = (int)(round(sqrt( (VerticalChange*VerticalChange) + (HorizontalChange*HorizontalChange))));
-            if(gradient > 180){ //if its bigger we'll consider it an edge so we make the pixel black
-                EdgedImage[i][j] = 0;
+            if (gradient > 180) { //if its bigger we'll consider it an edge so we make the pixel black
+                edgedImage[i][j] = 0;
+            } else {
+                edgedImage[i][j] = 255;
             }
-            else
-                EdgedImage[i][j] = 255;
         }
     }
-    char imageFileName[100];
-    cout << "Enter the target image file name: ";
-    cin >> imageFileName;
 
-    // Add to it .bmp extension and load image
-    strcat (imageFileName, ".bmp");
-    writeGSBMP(imageFileName, EdgedImage);
-
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = edgedImage[i][j];
+        }
+    }
 }
 
 //_________________________________________
@@ -336,7 +338,7 @@ void enlarge() {
     do {
         cin >> choice;
         if (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
-            cout << "Invalid Input. Try again." << endl;
+            cout << "Invalid input. Try again." << endl;
         }
     } while (choice != 1 && choice != 2 && choice != 3 && choice != 4);
 
@@ -387,25 +389,30 @@ void enlarge() {
         }
     }
 
-    char imageCopyFileName[100];
-
-    cout << "Enter the target image file name: ";
-    cin >> imageCopyFileName;
-
-    strcat(imageCopyFileName, ".bmp");
-    writeGSBMP(imageCopyFileName, enlarged_image);
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = enlarged_image[i][j];
+        }
+    }
 }
 
 //_________________________________________
 void shrink() {
-    cout << "Shrink to: a) 1/2, b) 1/3 or c) 1/4 ?\n";
-    char ans;
-    cin >> ans;
-    unsigned char Shrinked_image[SIZE][SIZE];
-    if(ans == 'a'){
-        for (int i = 0; i < SIZE; ++i) {
-            for (int j = 0; j < SIZE; ++j) {
-                Shrinked_image[i][j] = 255;
+    char answer;
+    unsigned char shrinked_image[SIZE][SIZE];
+
+    cout << "Shrink to: a) 1/2, b) 1/3 or c) 1/4?" << endl;
+    do {
+        cin >> answer;
+        if (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C' && answer != 'd' && answer != 'D') {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C' && answer != 'd' && answer != 'D');
+
+    if (answer == 'a' || answer == 'A') {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                shrinked_image[i][j] = 255;
             }
         }
         //Shrinking by half means we want each pixel to have two pixels of the original image
@@ -414,61 +421,43 @@ void shrink() {
         //then the first pixel will have these indices (row,col): { (0,0), (0,1), (1,0), (1,1) }, we'll take the average of these pixels
         //so in the end each pixel in the shrinked image will have that 2*2 square
 
-        for (int i = 0, x = 0; i < SIZE; i+=2, x++){
-            for (int j = 0, y = 0; j < SIZE; j+=2, y++) {
-                Shrinked_image[x][y] = (double)(image[i][j] + image[i][j+1] + image[i+1][j] + image[i+1][j+1])/4.0;
+        for (int i {0}, x {0}; i < SIZE; i += 2, ++x){
+            for (int j {0}, y {0}; j < SIZE; j += 2, ++y) {
+                shrinked_image[x][y] = (double)(image[i][j] + image[i][j + 1] + image[i + 1][j] + image[i + 1][j + 1]) / 4.0;
             }
         }
-
-        char imageFileName[100];
-        cout << "Enter the target image file name: ";
-        cin >> imageFileName;
-        strcat (imageFileName, ".bmp");
-        writeGSBMP(imageFileName, Shrinked_image);
-
-    }
-    else if(ans == 'b'){
-        for (int i = 0; i < SIZE; ++i) {
-            for (int j = 0; j < SIZE; ++j) {
-                Shrinked_image[i][j] = 255;
+    } else if (answer == 'b' || answer == 'B') {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                shrinked_image[i][j] = 255;
             }
         }
-        //shrinking by 1/3 means taking the average of the 9 adjacent pixels
-        for (int i = 1, x = 0; i < SIZE; i+=3, x++){
-            for (int j = 1, y = 0; j < SIZE; j+=3, y++) {
-                Shrinked_image[x][y] = (image[i][j] + image[i][j+1] + image[i][j - 1] + image[i+1][j] + image[i+1][j+1] + image[i+1][j - 1] + image[i - 1][j] + image[i - 1][j+1] + image[i - 1][j - 1])/9;
+        // shrinking by 1/3 means taking the average of the 9 adjacent pixels
+        for (int i {1}, x {0}; i < SIZE; i += 3, ++x){
+            for (int j {1}, y {0}; j < SIZE; j += 3, ++y) {
+                shrinked_image[x][y] = (image[i][j] + image[i][j + 1] + image[i][j - 1] + image[i + 1][j] + image[i + 1][j + 1] + image[i + 1][j - 1] + image[i - 1][j] + image[i - 1][j + 1] + image[i - 1][j - 1]) / 9;
             }
         }
-
-        char imageFileName[100];
-        cout << "Enter the target image file name: ";
-        cin >> imageFileName;
-        strcat (imageFileName, ".bmp");
-        writeGSBMP(imageFileName, Shrinked_image);
-
-    }
-    else if(ans == 'c'){
-        for (int i = 0; i < SIZE; ++i) {
-            for (int j = 0; j < SIZE; ++j) {
-                Shrinked_image[i][j] = 255;
+    } else if (answer == 'c' || answer == 'C') {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                shrinked_image[i][j] = 255;
             }
         }
         //shrinking by 1/4 means taking the average of the 16 adjacent pixels
-        for (int i = 0, x = 0; i < SIZE; i+=4, x++){
-            for (int j = 0, y = 0; j < SIZE; j+=4, y++) {
-                Shrinked_image[x][y] = (image[i][j] + image[i][j+1] + image[i][j+2] + image[i][j+3]
-                        + image[i+1][j] + image[i+1][j+1] + image[i+1][j+2] + image[i+1][j+3]
-                        + image[i+2][j] + image[i+2][j+1] + image[i+2][j+2] + image[i+2][j+3]
-                        + image[i+3][j] + image[i+3][j+1] + image[i+3][j+2] + image[i+3][j+3])/16;
+        for (int i {0}, x {0}; i < SIZE; i += 4, ++x){
+            for (int j {0}, y {0}; j < SIZE; j += 4, ++y) {
+                shrinked_image[x][y] = (image[i][j] + image[i][j + 1] + image[i][j + 2] + image[i][j + 3]
+                                        + image[i + 1][j] + image[i + 1][j + 1] + image[i + 1][j + 2] + image[i + 1][j + 3]
+                                        + image[i + 2][j] + image[i + 2][j + 1] + image[i + 2][j + 2] + image[i + 2][j + 3]
+                                        + image[i + 3][j] + image[i + 3][j + 1] + image[i + 3][j + 2] + image[i + 3][j + 3]) / 16;
             }
         }
-
-        char imageFileName[100];
-        cout << "Enter the target image file name: ";
-        cin >> imageFileName;
-        strcat (imageFileName, ".bmp");
-        writeGSBMP(imageFileName, Shrinked_image);
-
+    }
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = shrinked_image[i][j];
+        }
     }
 }
 
@@ -597,13 +586,11 @@ void shuffle() {
         }
     }
 
-    char imageCopyFileName[100];
-
-    cout << "Enter the target image file name: ";
-    cin >> imageCopyFileName;
-
-    strcat(imageCopyFileName, ".bmp");
-    writeGSBMP(imageCopyFileName, shuffled_image);
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = shuffled_image[i][j];
+        }
+    }
 }
 
 //_________________________________________
@@ -675,13 +662,11 @@ void crop() {
         }
     }
 
-    char imageCopyFileName[100];
-
-    cout << "Enter the target image file name: ";
-    cin >> imageCopyFileName;
-
-    strcat(imageCopyFileName, ".bmp");
-    writeGSBMP(imageCopyFileName, cropped_image);
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image[i][j] = cropped_image[i][j];
+        }
+    }
 }
 
 //_________________________________________
@@ -710,6 +695,7 @@ void menu() {
              << "12 - Blur Image.\n"
              << "13 - Crop Image.\n"
              << "14 - Skew Image.\n"
+             << "15 - Save Image.\n"
              << "0 - Exit" << endl;
         cin >> choice;
         switch (choice) {
@@ -755,11 +741,11 @@ void menu() {
             case 14:
                 skew();
                 break;
+            case 15:
+                saveImage();
+                break;
             default:
                 break;
-        }
-        if (choice != 0 && choice != 3 && choice != 5 && choice != 8 && choice != 13 && choice != 11) {
-            saveImage();
         }
     } while (choice != 0);
 }
