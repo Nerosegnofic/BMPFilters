@@ -327,12 +327,12 @@ void detect_edges() {
                 continue;
             }
             //Vertical change is the change in intensity in the x-axis
-            int VerticalChange = (image[i-1][j-1]*-1) + (image[i][j-1]*-2) + (image[i+1][j-1]*-1)
-                                 + (image[i-1][j+1]) + (image[i][j+1]*2) + (image[i+1][j+1]);
+            int VerticalChange = (image[i - 1][j - 1] * -1) + (image[i][j - 1] * -2) + (image[i + 1][j - 1] * -1)
+                                 + (image[i - 1][j + 1]) + (image[i][j + 1] * 2) + (image[i + 1][j + 1]);
 
             //Horizontal change is the change in intensity in the y-axis
-            int HorizontalChange = (image[i-1][j-1]*-1) + (image[i-1][j]*-2) + (image[i-1][j+1]*-1)
-                                   + (image[i+1][j-1]) + (image[i+1][j]*2) + (image[i+1][j+1]);
+            int HorizontalChange = (image[i - 1][j - 1] * -1) + (image[i - 1][j] * -2) + (image[i - 1][j + 1] * -1)
+                                   + (image[i + 1][j - 1]) + (image[i + 1][j] * 2) + (image[i + 1][j + 1]);
 
             //The gradient of these two changes will give us a value to determine by it the centered pixel if it is an edge or not
             //We do that by comparing this gradient value by a threshold value
@@ -371,7 +371,7 @@ void enlarge() {
     switch (choice) {
         case 1:
             for (int i {0}; i < 128 ; ++i) {
-                for (int j{0}; j < 128; ++j) {
+                for (int j {0}; j < 128; ++j) {
                     quarter_image[i][j] = image[i][j];
                 }
             }
@@ -394,7 +394,7 @@ void enlarge() {
             break;
 
         case 4:
-            for (int i {}; i < 128; ++i) {
+            for (int i {0}; i < 128; ++i) {
                 for (int j {0}; j < 128; ++j) {
                     quarter_image[i][j] = image[i + 128][j + 128];
                 }
