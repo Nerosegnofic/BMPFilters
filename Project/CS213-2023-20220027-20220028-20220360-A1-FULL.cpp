@@ -1,6 +1,6 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
-// Program Name:			    CS213-2023-20220027-20220028-20220360-A1-Part1.cpp
-// Last Modification Date:	    10/6/2023
+// Program Name:			    CS213-2023-20220027-20220028-20220360-A1-FULL.cpp
+// Last Modification Date:	    14/6/2023
 // Author1 and ID, Email, and Group:	Nour-aldeen Alaa            20220360 - nouralaa2279@gmail.com -  To Be Determined
 // Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  To Be Determined
 // Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  To Be Determined
@@ -18,6 +18,7 @@
 using namespace std;
 
 unsigned char image[SIZE][SIZE];
+unsigned char result_image[SIZE][SIZE];
 
 void loadImage ();
 void saveImage ();
@@ -65,7 +66,7 @@ void saveImage () {
 
     // Add to it .bmp extension and load image
     strcat (imageFileName, ".bmp");
-    writeGSBMP(imageFileName, image);
+    writeGSBMP(imageFileName, result_image);
 }
 
 //_________________________________________
@@ -87,6 +88,12 @@ void BW() {
             }
         }
     }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
+        }
+    }
 }
 
 //_________________________________________
@@ -94,6 +101,12 @@ void invert() {
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
             image[i][j] = 255 - image[i][j];
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
         }
     }
 }
@@ -118,7 +131,7 @@ void merge() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image[i][j] = image3[i][j];
+            result_image[i][j] = image3[i][j];
         }
     }
 }
@@ -157,6 +170,12 @@ void flip() {
 
         default:
             break;
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
+        }
     }
 }
 
@@ -228,19 +247,19 @@ void rotate() {
     if (choice == 90) {
         for (int i {0}; i < SIZE; ++i) {
             for (int j {0}; j < SIZE; ++j) {
-                image[i][j] = imageCopy[i][j];
+                result_image[i][j] = imageCopy[i][j];
             }
         }
     } else if (choice == 180) {
         for (int i {0}; i < SIZE; ++i) {
             for (int j {0}; j < SIZE; ++j) {
-                image[i][j] = imageCopy2[i][j];
+                result_image[i][j] = imageCopy2[i][j];
             }
         }
     } else if (choice == 270) {
         for (int i {0}; i < SIZE; ++i) {
             for (int j {0}; j < SIZE; ++j) {
-                image[i][j] = imageCopy3[i][j];
+                result_image[i][j] = imageCopy3[i][j];
             }
         }
     }
@@ -276,6 +295,12 @@ void darken_and_lighten() {
                 image[i][j] += AmountOfIncrease;
             }
 
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
         }
     }
 }
@@ -322,7 +347,7 @@ void detect_edges() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image[i][j] = edgedImage[i][j];
+            result_image[i][j] = edgedImage[i][j];
         }
     }
 }
@@ -391,7 +416,7 @@ void enlarge() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image[i][j] = enlarged_image[i][j];
+            result_image[i][j] = enlarged_image[i][j];
         }
     }
 }
@@ -456,7 +481,7 @@ void shrink() {
     }
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image[i][j] = shrinked_image[i][j];
+            result_image[i][j] = shrinked_image[i][j];
         }
     }
 }
@@ -512,6 +537,12 @@ void mirror() {
 
         default:
             break;
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
+        }
     }
 }
 
@@ -588,7 +619,7 @@ void shuffle() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image[i][j] = shuffled_image[i][j];
+            result_image[i][j] = shuffled_image[i][j];
         }
     }
 }
@@ -625,6 +656,12 @@ void blur() {
             } else {
                 image[i][j] = (image[i][j] + image[i][j + 1] + image[i][j - 1] + image[i - 1][j - 1] + image[i - 1][j] + image[i - 1][j + 1] + image[i + 1][j - 1] + image[i + 1][j] + image[i + 1][j + 1]) / 9;
             }
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image[i][j];
         }
     }
 }
@@ -664,7 +701,7 @@ void crop() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image[i][j] = cropped_image[i][j];
+            result_image[i][j] = cropped_image[i][j];
         }
     }
 }
