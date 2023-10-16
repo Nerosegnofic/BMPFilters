@@ -384,6 +384,70 @@ void shuffle() {
 }
 
 //_________________________________________
+void blur() {
+    unsigned char imageCopy[SIZE][SIZE][RGB];
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            imageCopy[i][j][0] = image[i][j][0];
+            imageCopy[i][j][1] = image[i][j][1];
+            imageCopy[i][j][2] = image[i][j][2];
+        }
+    }
+
+    // Get the average of all adjacent pixels of every pixel
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            if (i == 0 && j == 0) {
+                image[0][0][0] = (imageCopy[0][0][0] + imageCopy[0][1][0] + imageCopy[1][0][0] + imageCopy[1][1][0]) / 4;
+                image[0][0][1] = (imageCopy[0][0][1] + imageCopy[0][1][1] + imageCopy[1][0][1] + imageCopy[1][1][1]) / 4;
+                image[0][0][2] = (imageCopy[0][0][2] + imageCopy[0][1][2] + imageCopy[1][0][2] + imageCopy[1][1][2]) / 4;
+            } else if (i == 0 && j == 255) {
+                image[0][255][0] = (imageCopy[0][255][0] + imageCopy[1][255][0] + imageCopy[1][254][0] + imageCopy[1][254][0]) / 4;
+                image[0][255][1] = (imageCopy[0][255][1] + imageCopy[1][255][1] + imageCopy[1][254][1] + imageCopy[1][254][1]) / 4;
+                image[0][255][2] = (imageCopy[0][255][2] + imageCopy[1][255][2] + imageCopy[1][254][2] + imageCopy[1][254][2]) / 4;
+            } else if (i == 255 && j == 0) {
+                image[255][0][0] = (imageCopy[255][0][0] + imageCopy[255][1][0] + imageCopy[254][0][0] + imageCopy[254][1][0]) / 4;
+                image[255][0][1] = (imageCopy[255][0][1] + imageCopy[255][1][1] + imageCopy[254][0][1] + imageCopy[254][1][1]) / 4;
+                image[255][0][2] = (imageCopy[255][0][2] + imageCopy[255][1][2] + imageCopy[254][0][2] + imageCopy[254][1][2]) / 4;
+            } else if (i == 255 && j == 255) {
+                image[255][255][0] = (imageCopy[255][255][0] + imageCopy[255][254][0] + imageCopy[254][255][0] + imageCopy[254][254][0]) / 4;
+                image[255][255][1] = (imageCopy[255][255][1] + imageCopy[255][254][1] + imageCopy[254][255][1] + imageCopy[254][254][1]) / 4;
+                image[255][255][2] = (imageCopy[255][255][2] + imageCopy[255][254][2] + imageCopy[254][255][2] + imageCopy[254][254][2]) / 4;
+            } else if (i == 0) {
+                image[0][j][0] = (imageCopy[0][j][0] + imageCopy[0][j - 1][0] + imageCopy[0][j + 1][0] + imageCopy[1][j][0] + imageCopy[1][j - 1][0] + imageCopy[1][j + 1][0]) / 6;
+                image[0][j][1] = (imageCopy[0][j][1] + imageCopy[0][j - 1][1] + imageCopy[0][j + 1][1] + imageCopy[1][j][1] + imageCopy[1][j - 1][1] + imageCopy[1][j + 1][1]) / 6;
+                image[0][j][2] = (imageCopy[0][j][2] + imageCopy[0][j - 1][2] + imageCopy[0][j + 1][2] + imageCopy[1][j][2] + imageCopy[1][j - 1][2] + imageCopy[1][j + 1][2]) / 6;
+            } else if (i == 255) {
+                image[255][j][0] = (imageCopy[255][j][0] + imageCopy[255][j - 1][0] + imageCopy[255][j + 1][0] + imageCopy[254][j][0] + imageCopy[254][j - 1][0] + imageCopy[254][j + 1][0]) / 6;
+                image[255][j][1] = (imageCopy[255][j][1] + imageCopy[255][j - 1][1] + imageCopy[255][j + 1][1] + imageCopy[254][j][1] + imageCopy[254][j - 1][1] + imageCopy[254][j + 1][1]) / 6;
+                image[255][j][2] = (imageCopy[255][j][2] + imageCopy[255][j - 1][2] + imageCopy[255][j + 1][2] + imageCopy[254][j][2] + imageCopy[254][j - 1][2] + imageCopy[254][j + 1][2]) / 6;
+            } else if (j == 0) {
+                image[i][0][0] = (imageCopy[i][0][0] + imageCopy[i + 1][0][0] + imageCopy[i - 1][0][0] + imageCopy[i][1][0] + imageCopy[i + 1][1][0] + imageCopy[i - 1][1][0]) / 6;
+                image[i][0][1] = (imageCopy[i][0][1] + imageCopy[i + 1][0][1] + imageCopy[i - 1][0][1] + imageCopy[i][1][1] + imageCopy[i + 1][1][1] + imageCopy[i - 1][1][1]) / 6;
+                image[i][0][2] = (imageCopy[i][0][2] + imageCopy[i + 1][0][2] + imageCopy[i - 1][0][2] + imageCopy[i][1][2] + imageCopy[i + 1][1][2] + imageCopy[i - 1][1][2]) / 6;
+            } else if (j == 255) {
+                image[i][255][0] = (imageCopy[i][255][0] + imageCopy[i + 1][255][0] + imageCopy[i - 1][255][0] + imageCopy[i][254][0] + imageCopy[i + 1][254][0] + imageCopy[i - 1][254][0]) / 6;
+                image[i][255][1] = (imageCopy[i][255][1] + imageCopy[i + 1][255][1] + imageCopy[i - 1][255][1] + imageCopy[i][254][1] + imageCopy[i + 1][254][1] + imageCopy[i - 1][254][1]) / 6;
+                image[i][255][2] = (imageCopy[i][255][2] + imageCopy[i + 1][255][2] + imageCopy[i - 1][255][2] + imageCopy[i][254][2] + imageCopy[i + 1][254][2] + imageCopy[i - 1][254][2]) / 6;
+            } else {
+                image[i][j][0] = (image[i][j][0] + image[i][j + 1][0] + image[i][j - 1][0] + image[i - 1][j - 1][0] + image[i - 1][j][0] + image[i - 1][j + 1][0] + image[i + 1][j - 1][0] + image[i + 1][j][0] + image[i + 1][j + 1][0]) / 9;
+                image[i][j][1] = (image[i][j][1] + image[i][j + 1][1] + image[i][j - 1][1] + image[i - 1][j - 1][1] + image[i - 1][j][1] + image[i - 1][j + 1][1] + image[i + 1][j - 1][1] + image[i + 1][j][1] + image[i + 1][j + 1][1]) / 9;
+                image[i][j][2] = (image[i][j][2] + image[i][j + 1][2] + image[i][j - 1][2] + image[i - 1][j - 1][2] + image[i - 1][j][2] + image[i - 1][j + 1][2] + image[i + 1][j - 1][2] + image[i + 1][j][2] + image[i + 1][j + 1][2]) / 9;
+            }
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = image[i][j][0];
+            result_image[i][j][1] = image[i][j][1];
+            result_image[i][j][2] = image[i][j][2];
+        }
+    }
+}
+
+//_________________________________________
 void crop() {
 
 }
@@ -456,7 +520,7 @@ void menu() {
 //                shuffle();
                 break;
             case 12:
-//                blur();
+                blur();
                 break;
             case 13:
 //                crop();
