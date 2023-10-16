@@ -1,9 +1,9 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
 // Program Name:			    CS213-2023–S23-20220027-20220028-20220360-A1Bonus
 // Last Modification Date:	    14/6/2023
-// Author1 and ID, Email, and Group:	Nour-aldeen Alaa            20220360 - nouralaa2279@gmail.com -  To Be Determined
+// Author1 and ID, Email, and Group:	Nour-aldeen Alaa            20220360 - nouralaa2279@gmail.com -  S24
 // Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  To Be Determined
-// Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  To Be Determined
+// Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  S23
 // Teaching Assistant:		To Be Determined
 // Purpose: Applying Filters to 256x256 BMP Images
 
