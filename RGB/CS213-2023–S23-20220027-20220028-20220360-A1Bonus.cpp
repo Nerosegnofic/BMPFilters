@@ -144,7 +144,106 @@ void flip() {
 
 //_________________________________________
 void rotate() {
+    unsigned char imageCopy[SIZE][SIZE][RGB];
+    unsigned char imageCopy2[SIZE][SIZE][RGB];
+    unsigned char imageCopy3[SIZE][SIZE][RGB];
 
+    int choice;
+    cout << "How many degrees do you want the image to be rotated? (90, 180, 270)" << endl;
+    do {
+        cin >> choice;
+        if (choice != 90 && choice != 180 && choice != 270) {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (choice != 90 && choice != 180 && choice != 270);
+
+    switch (choice) {
+        /*First pixels row of original image is the last pixels column of resulting image,
+         * and second pixels row of original image is the second last pixels column of resulting image,
+         * and so on until the last pixels row of original image is the first pixels column of resulting image.*/
+        case 90:
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy[j][SIZE - i - 1][0] = image[i][j][0];
+                    imageCopy[j][SIZE - i - 1][1] = image[i][j][1];
+                    imageCopy[j][SIZE - i - 1][2] = image[i][j][2];
+                }
+            }
+            break;
+
+        case 180:
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy[j][SIZE - i - 1][0] = image[i][j][0];
+                    imageCopy[j][SIZE - i - 1][1] = image[i][j][1];
+                    imageCopy[j][SIZE - i - 1][2] = image[i][j][2];
+                }
+            }
+
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy2[j][SIZE - i - 1][0] = imageCopy[i][j][0];
+                    imageCopy2[j][SIZE - i - 1][1] = imageCopy[i][j][1];
+                    imageCopy2[j][SIZE - i - 1][2] = imageCopy[i][j][2];
+                }
+            }
+            break;
+
+        case 270:
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy[j][SIZE - i - 1][0] = image[i][j][0];
+                    imageCopy[j][SIZE - i - 1][1] = image[i][j][1];
+                    imageCopy[j][SIZE - i - 1][2] = image[i][j][2];
+                }
+            }
+
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy2[j][SIZE - i - 1][0] = imageCopy[i][j][0];
+                    imageCopy2[j][SIZE - i - 1][1] = imageCopy[i][j][1];
+                    imageCopy2[j][SIZE - i - 1][2] = imageCopy[i][j][2];
+                }
+            }
+
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    imageCopy3[j][SIZE - i - 1][0] = imageCopy2[i][j][0];
+                    imageCopy3[j][SIZE - i - 1][1] = imageCopy2[i][j][1];
+                    imageCopy3[j][SIZE - i - 1][2] = imageCopy2[i][j][2];
+                }
+            }
+
+            break;
+        default:
+            break;
+    }
+
+    if (choice == 90) {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                result_image[i][j][0] = imageCopy[i][j][0];
+                result_image[i][j][1] = imageCopy[i][j][1];
+                result_image[i][j][2] = imageCopy[i][j][2];
+            }
+        }
+    } else if (choice == 180) {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                result_image[i][j][0] = imageCopy2[i][j][0];
+                result_image[i][j][1] = imageCopy2[i][j][1];
+                result_image[i][j][2] = imageCopy2[i][j][2];
+            }
+        }
+    } else if (choice == 270) {
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                result_image[i][j][0] = imageCopy3[i][j][0];
+                result_image[i][j][1] = imageCopy3[i][j][1];
+                result_image[i][j][2] = imageCopy3[i][j][2];
+            }
+        }
+    }
 }
 
 //_________________________________________
@@ -336,7 +435,7 @@ void menu() {
 //                flip();
                 break;
             case 5:
-//                rotate();
+                rotate();
                 break;
             case 6:
                 darken_and_lighten();
