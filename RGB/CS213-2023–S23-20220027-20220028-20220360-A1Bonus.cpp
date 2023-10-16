@@ -19,6 +19,9 @@ using namespace std;
 
 unsigned char image[SIZE][SIZE][RGB];
 unsigned char result_image[SIZE][SIZE][RGB];
+unsigned char grayImage[SIZE][SIZE];
+unsigned char edgedImage[SIZE][SIZE];
+bool GS = false;
 
 void loadImage ();
 void saveImage ();
@@ -38,6 +41,7 @@ void blur();
 void crop();
 void skew();
 void skew_vertically();
+void gray_Scaling();
 
 int main() {
     menu();
@@ -67,6 +71,11 @@ void saveImage() {
 
    // Add to it .bmp extension and load image
    strcat(imageFileName, ".bmp");
+   if(GS){
+       writeGSBMP(imageFileName, edgedImage);
+       GS = false;
+       return;
+   }
    writeRGBBMP(imageFileName, result_image);
 }
 
@@ -343,8 +352,61 @@ void darken_and_lighten() {
     }
 }
 
+void gray_Scaling(){
+    GS = true;
+    for (int i = 0; i < SIZE; ++i) {
+        for (int j = 0; j < SIZE; ++j) {
+            grayImage[i][j] = (image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3.0;
+        }
+    }
+}
+
+
 //_________________________________________
 void detect_edges() {
+    /*
+  * Detecting Edges has many algorithms, here we'll do the sobel operator algorithm
+  * This algorithm uses a 3*3 matrix with negative and positive same values and zeroes in the middle
+  * we multiply the adjacents of each index in the original image by these values to know if there is a change
+  * in the intensity of the picture happening or not, we do it vertically and horizontally
+  * then we calculate the gradient and if its bigger than the threshold value then it is an edge
+  *
+  * NOTE: the threshold value is a value that you decide depending on whether you want the edges to be clear and a lot
+  * or you want a light simple edges.
+  * Make sure you search more on the algorithm to understand it better if you found struggle with the code
+  */
+
+    //make the image gray-scale first
+    gray_Scaling();
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j{0}; j < SIZE; ++j) {
+            if (i == 0 || j == 0 || i == SIZE - 1 ||
+                j == SIZE - 1) { //if it is a corner, make it the same as the original pixel
+                edgedImage[i][j] = grayImage[i][j];
+                continue;
+            }
+            //Vertical change is the change in intensity in the x-axis
+            //Horizontal change is the change in intensity in the y-axis
+
+            int VerticalChange =
+                    (grayImage[i - 1][j - 1] * -1) + (grayImage[i][j - 1] * -2) + (grayImage[i + 1][j - 1] * -1)
+                    + (grayImage[i - 1][j + 1]) + (grayImage[i][j + 1] * 2) + (grayImage[i + 1][j + 1]);
+
+            int HorizontalChange =
+                    (grayImage[i - 1][j - 1] * -1) + (grayImage[i - 1][j] * -2) + (grayImage[i - 1][j + 1] * -1)
+                    + (grayImage[i + 1][j - 1]) + (grayImage[i + 1][j] * 2) + (grayImage[i + 1][j + 1]);
+
+            int gradient = (int) (round(
+                    sqrt((VerticalChange * VerticalChange) + (HorizontalChange * HorizontalChange))));
+            if (gradient > 180) { //if its bigger we'll consider it an edge so we make the pixel black
+                edgedImage[i][j] = 0;
+            } else {
+                edgedImage[i][j] = 255;
+            }
+
+        }
+    }
 
 }
 
@@ -742,6 +804,7 @@ void skew_vertically() {
 void menu() {
     int choice;
     do {
+        GS = false;
         loadImage();
         cout << "What filter do you want to apply upon this image?\n";
         cout << "=================================================\n";
@@ -781,7 +844,7 @@ void menu() {
                 darken_and_lighten();
                 break;
             case 7:
-//                detect_edges();
+                detect_edges();
                 break;
             case 8:
                 enlarge();
