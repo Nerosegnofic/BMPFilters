@@ -2,7 +2,7 @@
 // Program Name:			    CS213-2023-20220027-20220028-20220360-A1-FULL
 // Last Modification Date:	    16/6/2023
 // Author1 and ID, Email, and Group:	Nour-aldeen Alaa            20220360 - nouralaa2279@gmail.com -  S24
-// Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  S24
+// Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  S23
 // Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  S23
 // Teaching Assistant:		To Be Determined
 // Purpose: Applying Filters to 256x256 BMP Images
