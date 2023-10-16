@@ -921,7 +921,7 @@ void menu() {
                 enlarge();
                 break;
             case 9:
-//                shrink();
+                shrink();
                 break;
             case 10:
                 mirror();
