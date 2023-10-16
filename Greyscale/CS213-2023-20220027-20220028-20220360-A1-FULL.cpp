@@ -1,8 +1,8 @@
 // FCAI – OOP Programming – 2023 - Assignment 1
 // Program Name:			    CS213-2023-20220027-20220028-20220360-A1-FULL
-// Last Modification Date:	    14/6/2023
+// Last Modification Date:	    16/6/2023
 // Author1 and ID, Email, and Group:	Nour-aldeen Alaa            20220360 - nouralaa2279@gmail.com -  S24
-// Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  To Be Determined
+// Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  S24
 // Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  S23
 // Teaching Assistant:		To Be Determined
 // Purpose: Applying Filters to 256x256 BMP Images
@@ -37,6 +37,7 @@ void shuffle();
 void blur();
 void crop();
 void skew();
+void skew_vertically();
 
 int main() {
     menu();
@@ -710,33 +711,118 @@ void crop() {
 }
 
 //_________________________________________
-void skew(){
+void skew() {
     double rad;
-    cin >> rad;
-    rad = (rad * 22) / (180 * 7);
-    double mov = tan(rad) * 256;
-    double step = mov / SIZE;
-    unsigned char img_in[SIZE][SIZE + (int)mov];
-    for (int i {0}; i < SIZE; ++i) {
-        for (int j {0}; j < SIZE; ++j) {
-            img_in[i][j] = 255;
+    char choice;
+
+    cout << "Do you want to skew the image (h)orizontally or (v)ertically?" << endl;
+
+    do {
+        cin >> choice;
+        if (choice != 'h' && choice != 'H' && choice != 'v' && choice != 'V') {
+            cout << "Invalid input. Try again." << endl;
         }
-    }
-    for (int i {0}; i < SIZE; ++i) {
-        for (int j {0}; j < SIZE; ++j) {
-            img_in[i][j + (int)mov] = image[i][j];
+    } while (choice != 'h' && choice != 'H' && choice != 'v' && choice != 'V');
+
+    if (choice == 'h' || choice == 'H') {
+
+        cout << "Enter radian value." << endl;
+        cin >> rad;
+
+        rad = (rad * 22) / (180 * 7);
+
+        double mov = tan(rad) * 256;
+        double step = mov / SIZE;
+
+        unsigned char img_in[SIZE][SIZE + (int) mov];
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                img_in[i][j] = 255;
+            }
         }
-        mov -= step;
-    }
-    for (int i {0}; i < SIZE; ++i) {
-        for (int j {0}; j < SIZE; ++j){
-            image[i][j] = img_in[i][j];
+
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                img_in[i][j + (int) mov] = image[i][j];
+            }
+            mov -= step;
         }
+
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                image[i][j] = img_in[i][j];
+            }
+        }
+
+    } else {
+        skew_vertically();
     }
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
             result_image[i][j] = image[i][j];
+        }
+    }
+}
+
+void skew_vertically() {
+    double rad;
+    cout << "Enter radian value." << endl;
+    do {
+        cin >> rad;
+        if (rad < 0 || rad >= 45) {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (rad < 0 || rad >= 45);
+
+    unsigned char img_in[SIZE][SIZE];
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            img_in[i][j] = 255;
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        // compute the white places on the left of the image and on its right
+        int left = (SIZE - i) * tan(rad * M_PI / 180.0),
+                right = (i + 1) * tan(rad * M_PI / 180.0),
+                w = left;
+
+        // compute the shrink ratio
+        double shrink = (double) SIZE / (SIZE - (left + right)),
+                remainder = 0;
+
+        // move by the shrink ratio in each step
+        for (int j {0}; j < SIZE; j += floor(shrink + remainder)) {
+            // compute the average
+            int avg {0};
+            for (int k {0}; k < floor(shrink + remainder); ++k) {
+                avg += image[j][i + k];
+            }
+
+            // if the pixels of the skewed image exceeded the computed width break
+            if (w > SIZE - right) {
+                break;
+            }
+
+            // assign the average value to the image
+            img_in[w][i] = avg / floor(shrink + remainder);
+            ++w;
+
+            // update the remainder
+            if (floor(shrink + remainder) > floor(shrink)) {
+                remainder -= (1 - (shrink - floor(shrink)));
+            } else {
+                remainder += shrink - floor(shrink);
+            }
+        }
+    }
+
+    // copy the result to the image
+    for (int i {0}; i < SIZE; i++) {
+        for (int j {0}; j < SIZE; j++) {
+            image[i][j] = img_in[i][j];
         }
     }
 }
