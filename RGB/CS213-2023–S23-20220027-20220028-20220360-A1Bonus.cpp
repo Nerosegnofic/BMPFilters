@@ -449,7 +449,48 @@ void blur() {
 
 //_________________________________________
 void crop() {
+    int x, y, l, w;
+    cout << "Enter x, y position." << endl;
+    do {
+        cin >> x >> y;
+        if (x < 0 || x > 255 || y < 0 || y > 255) {
+            cout << "Invalid Input. Try again." << endl;
+        }
+    } while (x < 0 || x > 255 || y < 0 || y > 255);
 
+    cout << "Enter length and width." << endl;
+    do {
+        cin >> l >> w;
+        if ((x + l - 1) > 255 || (x + l - 1) < 0 || (y + w - 1) > 255 || (y + w - 1) < 0) {
+            cout << "Invalid Input. Try again." << endl;
+        }
+    } while ((x + l - 1) > 255 || (x + l - 1) < 0 || (y + w - 1) > 255 || (y + w - 1) < 0);
+
+    unsigned char cropped_image[SIZE][SIZE][RGB];
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            cropped_image[i][j][0] = 255;
+            cropped_image[i][j][1] = 255;
+            cropped_image[i][j][2] = 255;
+        }
+    }
+
+    for (int i {x}; i < x + l; ++i) {
+        for (int j {y}; j < y + w; ++j) {
+            cropped_image[i][j][0] = image[i][j][0];
+            cropped_image[i][j][1] = image[i][j][1];
+            cropped_image[i][j][2] = image[i][j][2];
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = cropped_image[i][j][0];
+            result_image[i][j][1] = cropped_image[i][j][1];
+            result_image[i][j][2] = cropped_image[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
@@ -523,7 +564,7 @@ void menu() {
                 blur();
                 break;
             case 13:
-//                crop();
+                crop();
                 break;
             case 14:
 //                skew();
