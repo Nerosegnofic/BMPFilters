@@ -849,7 +849,6 @@ void menu() {
              << "12 - Blur Image.\n"
              << "13 - Crop Image.\n"
              << "14 - Skew Image.\n"
-             << "15 - Save Image.\n"
              << "0 - Exit" << endl;
         cin >> choice;
         switch (choice) {
@@ -895,11 +894,22 @@ void menu() {
             case 14:
                 skew();
                 break;
-            case 15:
-                saveImage();
-                break;
             default:
                 break;
+        }
+        if(choice != 0){
+            cout << "Do you want to save this filter?\n";
+            cout << "(Y): yes or (N): no\n";
+            char choice2;
+            cin >> choice2;
+            tolower(choice2);
+            if(choice2 == 'y') {
+                saveImage();
+                cout << "do you want to exit? (y) yes or (n) no\n";
+                cin >> choice2;
+                if (choice2 == 'y')
+                    return;
+            }
         }
     } while (choice != 0);
 }
