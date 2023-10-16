@@ -500,7 +500,78 @@ void enlarge() {
 
 //_________________________________________
 void shrink() {
+    char answer;
+    unsigned char shrinked_image[SIZE][SIZE][RGB];
 
+    cout << "Shrink to: a) 1/2, b) 1/3 or c) 1/4?" << endl;
+    do {
+        cin >> answer;
+        if (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C') {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (answer != 'a' && answer != 'A' && answer != 'b' && answer != 'B' && answer != 'c' && answer != 'C');
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            shrinked_image[i][j][0] = 255;
+            shrinked_image[i][j][1] = 255;
+            shrinked_image[i][j][2] = 255;
+        }
+    }
+
+    if (answer == 'a' || answer == 'A') {
+
+        //Shrinking by half means we want each pixel to have two pixels of the original image
+        //and since the pixel is a row and a column, then we want two pixels from the rows, and two from the columns
+        //Example to make it clear: suppose we have an 8*8 bitmap, and we want to shrink it by half (4*4)
+        //then the first pixel will have these indices (row,col): { (0,0), (0,1), (1,0), (1,1) }, we'll take the average of these pixels
+        //so in the end each pixel in the shrinked image will have that 2*2 square
+
+        for (int i {0}, x {0}; i < SIZE; i += 2, ++x){
+            for (int j {0}, y {0}; j < SIZE; j += 2, ++y) {
+                shrinked_image[x][y][0] = (double)(image[i][j][0] + image[i][j + 1][0] + image[i + 1][j][0] + image[i + 1][j + 1][0]) / 4.0;
+                shrinked_image[x][y][1] = (double)(image[i][j][1] + image[i][j + 1][1] + image[i + 1][j][1] + image[i + 1][j + 1][1]) / 4.0;
+                shrinked_image[x][y][2] = (double)(image[i][j][2] + image[i][j + 1][2] + image[i + 1][j][2] + image[i + 1][j + 1][2]) / 4.0;
+            }
+        }
+    } else if (answer == 'b' || answer == 'B') {
+
+        // shrinking by 1/3 means taking the average of the 9 adjacent pixels
+        for (int i {1}, x {0}; i < SIZE; i += 3, ++x){
+            for (int j {1}, y {0}; j < SIZE; j += 3, ++y) {
+                shrinked_image[x][y][0] = (image[i][j][0] + image[i][j + 1][0] + image[i][j - 1][0] + image[i + 1][j][0] + image[i + 1][j + 1][0] + image[i + 1][j - 1][0] + image[i - 1][j][0] + image[i - 1][j + 1][0] + image[i - 1][j - 1][0]) / 9;
+                shrinked_image[x][y][1] = (image[i][j][1] + image[i][j + 1][1] + image[i][j - 1][1] + image[i + 1][j][1] + image[i + 1][j + 1][1] + image[i + 1][j - 1][1] + image[i - 1][j][1] + image[i - 1][j + 1][1] + image[i - 1][j - 1][1]) / 9;
+                shrinked_image[x][y][2] = (image[i][j][2] + image[i][j + 1][2] + image[i][j - 1][2] + image[i + 1][j][2] + image[i + 1][j + 1][2] + image[i + 1][j - 1][2] + image[i - 1][j][2] + image[i - 1][j + 1][2] + image[i - 1][j - 1][2]) / 9;
+            }
+        }
+    } else if (answer == 'c' || answer == 'C') {
+
+        //shrinking by 1/4 means taking the average of the 16 adjacent pixels
+        for (int i {0}, x {0}; i < SIZE; i += 4, ++x){
+            for (int j {0}, y {0}; j < SIZE; j += 4, ++y) {
+                shrinked_image[x][y][0] = (image[i][j][0] + image[i][j + 1][0] + image[i][j + 2][0] + image[i][j + 3][0]
+                                        + image[i + 1][j][0] + image[i + 1][j + 1][0] + image[i + 1][j + 2][0] + image[i + 1][j + 3][0]
+                                        + image[i + 2][j][0] + image[i + 2][j + 1][0] + image[i + 2][j + 2][0] + image[i + 2][j + 3][0]
+                                        + image[i + 3][j][0] + image[i + 3][j + 1][0] + image[i + 3][j + 2][0] + image[i + 3][j + 3][0]) / 16;
+
+                shrinked_image[x][y][1] = (image[i][j][1] + image[i][j + 1][1] + image[i][j + 2][1] + image[i][j + 3][1]
+                                           + image[i + 1][j][1] + image[i + 1][j + 1][1] + image[i + 1][j + 2][1] + image[i + 1][j + 3][1]
+                                           + image[i + 2][j][1] + image[i + 2][j + 1][1] + image[i + 2][j + 2][1] + image[i + 2][j + 3][1]
+                                           + image[i + 3][j][1] + image[i + 3][j + 1][1] + image[i + 3][j + 2][1] + image[i + 3][j + 3][1]) / 16;
+
+                shrinked_image[x][y][2] = (image[i][j][2] + image[i][j + 1][2] + image[i][j + 2][2] + image[i][j + 3][2]
+                                           + image[i + 1][j][2] + image[i + 1][j + 1][2] + image[i + 1][j + 2][2] + image[i + 1][j + 3][2]
+                                           + image[i + 2][j][2] + image[i + 2][j + 1][2] + image[i + 2][j + 2][2] + image[i + 2][j + 3][2]
+                                           + image[i + 3][j][2] + image[i + 3][j + 1][2] + image[i + 3][j + 2][2] + image[i + 3][j + 3][2]) / 16;
+            }
+        }
+    }
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = shrinked_image[i][j][0];
+            result_image[i][j][1] = shrinked_image[i][j][1];
+            result_image[i][j][2] = shrinked_image[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
