@@ -110,7 +110,27 @@ void invert() {
 
 //_________________________________________
 void merge() {
+    char imageFileName[100];
+    unsigned char image2[SIZE][SIZE][RGB];
+    unsigned char image3[SIZE][SIZE][RGB];
 
+    cout << "Enter the second source image file name: ";
+    cin >> imageFileName;
+
+    strcat (imageFileName, ".bmp");
+    readRGBBMP(imageFileName, image2);
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            image3[i][j] = (image[i][j] + image2[i][j]) / 2;
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j] = image3[i][j];
+        }
+    }
 }
 
 //_________________________________________
@@ -189,7 +209,6 @@ void menu() {
              << "12 - Blur Image.\n"
              << "13 - Crop Image.\n"
              << "14 - Skew Image.\n"
-             << "15 - Save Image.\n"
              << "0 - Exit" << endl;
         cin >> choice;
         switch (choice) {
@@ -200,7 +219,7 @@ void menu() {
                 invert();
                 break;
             case 3:
-//                merge();
+                merge();
                 break;
             case 4:
 //                flip();
@@ -235,11 +254,25 @@ void menu() {
             case 14:
 //                skew();
                 break;
-            case 15:
-                saveImage();
-                break;
             default:
                 break;
+        }
+
+        if (choice != 0) {
+            cout << "Do you want to save this filter?" << endl;
+            cout << "(Y): yes or (N): no" << endl;
+
+            char choice2;
+            cin >> choice2;
+            choice2 = tolower(choice2);
+
+            if (choice2 == 'y') {
+                saveImage();
+                cout << "Do you want to exit? (y) yes or (n) no" << endl;
+                cin >> choice2;
+                if (choice2 == 'y')
+                    return;
+            }
         }
     } while (choice != 0);
 }
