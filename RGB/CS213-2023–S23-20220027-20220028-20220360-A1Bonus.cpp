@@ -211,7 +211,72 @@ void shrink() {
 
 //_________________________________________
 void mirror() {
+    char choice;
 
+    cout << "Which part do you want to mirror? (L)eft, (R)ight, (U)p, or (D)own?" << endl;
+    do {
+        cin >> choice;
+        if (choice != 'l' && choice != 'L' && choice != 'r' && choice != 'R' && choice != 'u' && choice != 'U' && choice != 'd' && choice != 'D') {
+            cout << "Invalid Input. Try again." << endl;
+        }
+    } while (choice != 'l' && choice != 'L' && choice != 'r' && choice != 'R' && choice != 'u' && choice != 'U' && choice != 'd' && choice != 'D');
+
+    // Put every pixel on its opposite side of the image depending on user choice
+    switch (choice) {
+        case 'l':
+        case 'L':
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {0}; j < SIZE / 2; ++j) {
+                    image[i][SIZE - j - 1][0] = image[i][j][0];
+                    image[i][SIZE - j - 1][1] = image[i][j][1];
+                    image[i][SIZE - j - 1][2] = image[i][j][2];
+                }
+            }
+            break;
+
+        case 'r':
+        case 'R':
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j {255}; j >= SIZE / 2; --j) {
+                    image[i][SIZE - j - 1][0] = image[i][j][0];
+                    image[i][SIZE - j - 1][1] = image[i][j][1];
+                    image[i][SIZE - j - 1][2] = image[i][j][2];
+                }
+            }
+            break;
+
+        case 'u':
+        case 'U':
+            for (int i {0}; i < SIZE / 2; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    image[SIZE - i - 1][j][0] = image[i][j][0];
+                    image[SIZE - i - 1][j][1] = image[i][j][1];
+                    image[SIZE - i - 1][j][2] = image[i][j][2];
+                }
+            }
+            break;
+
+        case 'd':
+        case 'D':
+            for (int i {255}; i >= SIZE / 2; --i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    image[SIZE - i - 1][j][0] = image[i][j][0];
+                    image[SIZE - i - 1][j][1] = image[i][j][1];
+                    image[SIZE - i - 1][j][2] = image[i][j][2];
+                }
+            }
+
+        default:
+            break;
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = image[i][j][0];
+            result_image[i][j][1] = image[i][j][1];
+            result_image[i][j][2] = image[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
@@ -286,7 +351,7 @@ void menu() {
 //                shrink();
                 break;
             case 10:
-//                mirror();
+                mirror();
                 break;
             case 11:
 //                shuffle();
