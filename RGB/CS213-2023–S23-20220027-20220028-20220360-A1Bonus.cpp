@@ -8,6 +8,8 @@
 // Purpose: Applying Filters to 256x256 BMP RGB Images
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 #include <fstream>
 #include <cstring>
 #include <cmath>
@@ -140,6 +142,54 @@ void merge() {
 //_________________________________________
 void flip() {
 
+// ask the user about the way to flip the image (vertically or horizontally)
+    cout << "Enter 'H' if you want to flip the image horizontally, otherwise enter 'V'" << endl;
+    char choice;
+    // check receiving a valid option
+    do {
+        cin >> choice;
+        if (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v') {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (choice != 'H' && choice != 'h' && choice != 'V' && choice != 'v');
+    switch (choice) {
+        // if horizontally go through each row and swap each column from the left with its counterpart from the right
+        case 'H':
+        case 'h':
+            for (int i {0}; i < SIZE; ++i) {
+                for (int j{0}; j < SIZE / 2; ++j) {
+                    swap(image[i][j][0], image[i][SIZE - j - 1][0]);
+                    swap(image[i][j][1], image[i][SIZE - j - 1][1]);
+                    swap(image[i][j][2], image[i][SIZE - j - 1][2]);
+
+                }
+            }
+            break;
+            // if vertically go through each column and swap each row from the left with it counterpart from the right
+        case 'V':
+        case 'v':
+            for (int i {0}; i < SIZE / 2; ++i) {
+                for (int j {0}; j < SIZE; ++j) {
+                    swap(image[i][j][0], image[SIZE - i - 1][j][0]);
+                    swap(image[i][j][1], image[SIZE - i - 1][j][1]);
+                    swap(image[i][j][2], image[SIZE - i - 1][j][2]);
+
+                }
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = image[i][j][0];
+            result_image[i][j][1] = image[i][j][1];
+            result_image[i][j][2] = image[i][j][2];
+
+        }
+    }
 }
 
 //_________________________________________
@@ -301,6 +351,89 @@ void detect_edges() {
 //_________________________________________
 void enlarge() {
 
+    unsigned char quarter_image[128][128][RGB];
+    unsigned char enlarged_image[SIZE][SIZE][RGB];
+
+    // ask the user which quarter they want to enlarge
+    cout << "Which quarter do you want to enlarge?" << endl;
+    int choice;
+    // check if the choice is valid
+    do {
+        cin >> choice;
+        if (choice != 1 && choice != 2 && choice != 3 && choice != 4) {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (choice != 1 && choice != 2 && choice != 3 && choice != 4);
+    // store the required quarter
+    switch (choice) {
+        case 1:
+            for (int i {0}; i < 128 ; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j][0] = image[i][j][0];
+                    quarter_image[i][j][1] = image[i][j][1];
+                    quarter_image[i][j][2] = image[i][j][2];
+
+
+                }
+            }
+            break;
+
+        case 2:
+            for (int i {0}; i < 128; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j][0] = image[i][j + 128][0];
+                    quarter_image[i][j][1] = image[i][j + 128][1];
+                    quarter_image[i][j][2] = image[i][j + 128][2];
+
+                }
+            }
+            break;
+
+        case 3:
+            for (int i {0}; i < 128; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j][0] = image[i + 128][j][0];
+                    quarter_image[i][j][1] = image[i + 128][j][1];
+                    quarter_image[i][j][2] = image[i + 128][j][2];
+
+                }
+            }
+            break;
+
+        case 4:
+            for (int i {0}; i < 128; ++i) {
+                for (int j {0}; j < 128; ++j) {
+                    quarter_image[i][j][0] = image[i + 128][j + 128][0];
+                    quarter_image[i][j][1] = image[i + 128][j + 128][1];
+                    quarter_image[i][j][2] = image[i + 128][j + 128][2];
+
+                }
+            }
+            break;
+
+        default:
+            break;
+    }
+// enlarge that quarter by putting each pixel in four bits
+    for(int i {0}, x {0}; i < SIZE; ++++i, ++x) {
+        for (int j {0}, y {0}; j < SIZE; ++ ++j, ++y) {
+            for(int k{} ; k < RGB ; k++){
+                enlarged_image[i][j][k]
+                        = enlarged_image[i + 1][j][k]
+                        = enlarged_image[i][j + 1][k]
+                        = enlarged_image[i + 1][j + 1][k]
+                        = quarter_image[x][y][k];
+            }
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            for(int k{} ; k < RGB ; k++){
+                result_image[i][j][k] = enlarged_image[i][j][k];
+            }
+        }
+    }
 }
 
 //_________________________________________
@@ -381,6 +514,108 @@ void mirror() {
 //_________________________________________
 void shuffle() {
 
+// store each quarter in a single vector and store the vectors in another vector to reach them by index easily
+    vector< vector< vector< vector<int> > > > quarters(4, vector<vector<vector<int>>> (128, vector<vector<int>>(128 , vector<int>(3))));
+    // store first quarter
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[0][i][j][0] = image[i][j][0];
+            quarters[0][i][j][1] = image[i][j][1];
+            quarters[0][i][j][2] = image[i][j][2];
+        }
+    }
+    // store second quarter
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[1][i][j][0] = image[i][j + 128][0];
+            quarters[1][i][j][1] = image[i][j + 128][1];
+            quarters[1][i][j][2] = image[i][j + 128][2];
+
+        }
+    }
+    // store third quarter
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[2][i][j][0] = image[i + 128][j][0];
+            quarters[2][i][j][1] = image[i + 128][j][1];
+            quarters[2][i][j][2] = image[i + 128][j][2];
+
+        }
+    }
+    // store the fourth quarter
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            quarters[3][i][j][0] = image[i + 128][j + 128][0];
+            quarters[3][i][j][1] = image[i + 128][j + 128][1];
+            quarters[3][i][j][2] = image[i + 128][j + 128][2];
+
+        }
+    }
+// take the order from the user
+    int first_quarter, second_quarter, third_quarter, fourth_quarter;
+    cout << "Enter your input." << endl;
+    cin >> first_quarter >> second_quarter >> third_quarter >> fourth_quarter;
+
+    --first_quarter;
+    --second_quarter;
+    --third_quarter;
+    --fourth_quarter;
+// check if it's valid (all quarters exist)
+    vector<int> check_valid {first_quarter, second_quarter, third_quarter, fourth_quarter};
+
+    sort(check_valid.begin(), check_valid.end());
+    for (int i {0}; i < 4; ++i) {
+        if (check_valid[i] != i) {
+            return void(cout << "Invalid input. Try again.\n");
+        }
+    }
+
+    unsigned char shuffled_image[SIZE][SIZE][RGB];
+    // put the quarters in order of the new array
+    for (int i {0}; i < 128; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            shuffled_image[i][j][0] = quarters[first_quarter][i][j][0];
+            shuffled_image[i][j][2] = quarters[first_quarter][i][j][2];
+            shuffled_image[i][j][1] = quarters[first_quarter][i][j][1];
+
+        }
+    }
+
+    for(int i {0}; i < 128; ++i) {
+        for (int j {128}; j < SIZE; ++j) {
+            shuffled_image[i][j][0] = quarters[second_quarter][i][j - 128][0];
+            shuffled_image[i][j][1] = quarters[second_quarter][i][j - 128][1];
+            shuffled_image[i][j][2] = quarters[second_quarter][i][j - 128][2];
+
+        }
+    }
+
+    for (int i {128}; i < SIZE; ++i) {
+        for (int j {0}; j < 128; ++j) {
+            shuffled_image[i][j][0] = quarters[third_quarter][i - 128][j][0];
+            shuffled_image[i][j][1] = quarters[third_quarter][i - 128][j][1];
+            shuffled_image[i][j][2] = quarters[third_quarter][i - 128][j][2];
+
+        }
+    }
+
+    for (int i {128}; i < SIZE; ++i) {
+        for (int j {128}; j < SIZE; ++j) {
+            shuffled_image[i][j][0] = quarters[fourth_quarter][i - 128][j - 128][0];
+            shuffled_image[i][j][1] = quarters[fourth_quarter][i - 128][j - 128][1];
+            shuffled_image[i][j][2] = quarters[fourth_quarter][i - 128][j - 128][2];
+
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            for(int k{} ; k < RGB ; k++)
+            {
+                result_image[i][j][k] = shuffled_image[i][j][k];
+            }
+        }
+    }
 }
 
 //_________________________________________
@@ -537,7 +772,7 @@ void menu() {
                 merge();
                 break;
             case 4:
-//                flip();
+                flip();
                 break;
             case 5:
                 rotate();
@@ -549,7 +784,7 @@ void menu() {
 //                detect_edges();
                 break;
             case 8:
-//                enlarge();
+                enlarge();
                 break;
             case 9:
 //                shrink();
@@ -558,7 +793,7 @@ void menu() {
                 mirror();
                 break;
             case 11:
-//                shuffle();
+                shuffle();
                 break;
             case 12:
                 blur();
