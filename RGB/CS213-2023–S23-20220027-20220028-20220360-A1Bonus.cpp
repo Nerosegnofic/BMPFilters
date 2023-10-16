@@ -5,7 +5,7 @@
 // Author2 and ID, Email, and Group:	Ahmed Alaa Al-Din Mostafa   20220028 - alaa25086@gmail.com    -  S23
 // Author3 and ID, Email, and Group:	Ahmed Abdelnabi Abdelrasol  20220027 - amedgamer36@gmail.com  -  S23
 // Teaching Assistant:		To Be Determined
-// Purpose: Applying Filters to 256x256 BMP Images
+// Purpose: Applying Filters to 256x256 BMP RGB Images
 
 #include <iostream>
 #include <fstream>
@@ -16,6 +16,7 @@
 using namespace std;
 
 unsigned char image[SIZE][SIZE][RGB];
+unsigned char result_image[SIZE][SIZE][RGB];
 
 void loadImage ();
 void saveImage ();
@@ -64,17 +65,47 @@ void saveImage() {
 
    // Add to it .bmp extension and load image
    strcat(imageFileName, ".bmp");
-   writeRGBBMP(imageFileName, image);
+   writeRGBBMP(imageFileName, result_image);
 }
 
 //_________________________________________
 void BW() {
+    int avg {0};
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            avg += image[i][j][0] + image[i][j][1] + image[i][j][2];
+        }
+    }
+    avg /= SIZE * SIZE * RGB;
 
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            if (image[i][j][0] + image[i][j][1] + image[i][j][2] > avg) {
+                image[i][j][0] = image[i][j][1] = image[i][j][2] = 255;
+            } else {
+                image[i][j][0] = image[i][j][1] = image[i][j][2] = 0;
+            }
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = image[i][j][0];
+            result_image[i][j][1] = image[i][j][1];
+            result_image[i][j][2] = image[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
 void invert() {
-
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = 255 - image[i][j][0];
+            result_image[i][j][1] = 255 - image[i][j][1];
+            result_image[i][j][2] = 255 - image[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
@@ -158,6 +189,7 @@ void menu() {
              << "12 - Blur Image.\n"
              << "13 - Crop Image.\n"
              << "14 - Skew Image.\n"
+             << "15 - Save Image.\n"
              << "0 - Exit" << endl;
         cin >> choice;
         switch (choice) {
@@ -168,57 +200,46 @@ void menu() {
                 invert();
                 break;
             case 3:
-                merge();
+//                merge();
                 break;
             case 4:
-                flip();
+//                flip();
                 break;
             case 5:
-                rotate();
+//                rotate();
                 break;
             case 6:
-                darken_and_lighten();
+//                darken_and_lighten();
                 break;
             case 7:
-                detect_edges();
+//                detect_edges();
                 break;
             case 8:
-                enlarge();
+//                enlarge();
                 break;
             case 9:
-                shrink();
+//                shrink();
                 break;
             case 10:
-                mirror();
+//                mirror();
                 break;
             case 11:
-                shuffle();
+//                shuffle();
                 break;
             case 12:
-                blur();
+//                blur();
                 break;
             case 13:
-                crop();
+//                crop();
                 break;
             case 14:
-                skew();
+//                skew();
+                break;
+            case 15:
+                saveImage();
                 break;
             default:
                 break;
-        }
-        if(choice != 0){
-            cout << "Do you want to save this filter?\n";
-            cout << "(Y): yes or (N): no\n";
-            char choice2;
-            cin >> choice2;
-            tolower(choice2);
-            if(choice2 == 'y') {
-                saveImage();
-                cout << "do you want to exit? (y) yes or (n) no\n";
-                cin >> choice2;
-                if (choice2 == 'y')
-                    return;
-            }
         }
     } while (choice != 0);
 }
