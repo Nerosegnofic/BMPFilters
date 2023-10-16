@@ -149,7 +149,49 @@ void rotate() {
 
 //_________________________________________
 void darken_and_lighten() {
+    cout << "Do you want to (d)arken or (l)ighten?" << endl;
+    char choice;
+    do {
+        cin >> choice;
+        if (choice != 'd' && choice != 'D' && choice != 'l' && choice != 'L') {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (choice != 'd' && choice != 'D' && choice != 'l' && choice != 'L');
 
+    if (choice == 'd' || choice == 'D') {
+        //To make the image darker by 50%, you have to decrease the number of bits in the pixel by half
+        //we'll do that for each RGB channel: Red, Green and Blue
+
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                image[i][j][0] /= 2, image[i][j][1] /= 2, image[i][j][2] /= 2;
+            }
+        }
+    } else if (choice == 'l' || choice == 'L') {
+        //Same thing for making it more white, but this time you have to increase the number of bits in the pixel
+
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                double AmountOfIncrease = (255.0 - image[i][j][0]) / 2;
+                image[i][j][0] += AmountOfIncrease;
+
+                AmountOfIncrease = (255.0 - image[i][j][1]) / 2;
+                image[i][j][1] += AmountOfIncrease;
+
+                AmountOfIncrease = (255.0 - image[i][j][2]) / 2;
+                image[i][j][2] += AmountOfIncrease;
+            }
+
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            result_image[i][j][0] = image[i][j][0];
+            result_image[i][j][1] = image[i][j][1];
+            result_image[i][j][2] = image[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
@@ -232,7 +274,7 @@ void menu() {
 //                rotate();
                 break;
             case 6:
-//                darken_and_lighten();
+                darken_and_lighten();
                 break;
             case 7:
 //                detect_edges();
