@@ -122,13 +122,17 @@ void merge() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            image3[i][j] = (image[i][j] + image2[i][j]) / 2;
+            image3[i][j][0] = (image[i][j][0] + image2[i][j][0]) / 2;
+            image3[i][j][1] = (image[i][j][1] + image2[i][j][1]) / 2;
+            image3[i][j][2] = (image[i][j][2] + image2[i][j][2]) / 2;
         }
     }
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            result_image[i][j] = image3[i][j];
+            result_image[i][j][0] = image3[i][j][0];
+            result_image[i][j][1] = image3[i][j][1];
+            result_image[i][j][2] = image3[i][j][2];
         }
     }
 }
