@@ -72,6 +72,7 @@ void saveImage () {
 
 //_________________________________________
 void BW() {
+    // Get average
     int avg {0};
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
@@ -79,6 +80,8 @@ void BW() {
         }
     }
     avg /= SIZE * SIZE;
+
+    // if higher than average, set pixel to 255, otherwise set it to 0
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
@@ -99,6 +102,7 @@ void BW() {
 
 //_________________________________________
 void invert() {
+    // set each pixel to 255 - image[i][j]
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
             result_image[i][j] = 255 - image[i][j];
@@ -117,6 +121,10 @@ void merge() {
 
     strcat (imageFileName, ".bmp");
     readGSBMP(imageFileName, image2);
+
+    // Get pixel value of image, and pixel value of image2
+    // Divide them by 2
+    // Set pixel value of image3 to the result
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
@@ -201,6 +209,7 @@ void rotate() {
             }
             break;
 
+        // Rotate image by 90 degress twice using previous algorithm
         case 180:
             for (int i {0}; i < SIZE; ++i) {
                 for (int j {0}; j < SIZE; ++j) {
@@ -215,6 +224,7 @@ void rotate() {
             }
             break;
 
+        // Rotate image by 90 degress thrice using previous algorithm
         case 270:
             for (int i {0}; i < SIZE; ++i) {
                 for (int j {0}; j < SIZE; ++j) {
@@ -362,7 +372,7 @@ void enlarge() {
             cout << "Invalid input. Try again." << endl;
         }
     } while (choice != 1 && choice != 2 && choice != 3 && choice != 4);
-    // stroe the required quarter
+    // store the required quarter
     switch (choice) {
         case 1:
             for (int i {0}; i < 128 ; ++i) {
@@ -635,23 +645,23 @@ void blur() {
     // Get the average of all adjacent pixels of every pixel
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            if (i == 0 && j == 0) {
+            if (i == 0 && j == 0) { // if upper-left pixel, get average of adjacent pixels (4 pixels)
                 image[0][0] = (imageCopy[0][0] + imageCopy[0][1] + imageCopy[1][0] + imageCopy[1][1]) / 4;
-            } else if (i == 0 && j == 255) {
+            } else if (i == 0 && j == 255) { // else if upper-right corner pixel, get average of adjacent pixels (4 pixels)
                 image[0][255] = (imageCopy[0][255] + imageCopy[1][255] + imageCopy[1][254] + imageCopy[1][254]) / 4;
-            } else if (i == 255 && j == 0) {
+            } else if (i == 255 && j == 0) { // else if down-left corner pixel, get average of adjacent pixels (4 pixels)
                 image[255][0] = (imageCopy[255][0] + imageCopy[255][1] + imageCopy[254][0] + imageCopy[254][1]) / 4;
-            } else if (i == 255 && j == 255) {
+            } else if (i == 255 && j == 255) { // else if down-right corner pixel, get average of adjacent pixels (4 pixels)
                 image[255][255] = (imageCopy[255][255] + imageCopy[255][254] + imageCopy[254][255] + imageCopy[254][254]) / 4;
-            } else if (i == 0) {
+            } else if (i == 0) { // else if upper edge pixel, get average of adjacent pixels (6 pixels)
                 image[0][j] = (imageCopy[0][j] + imageCopy[0][j - 1] + imageCopy[0][j + 1] + imageCopy[1][j] + imageCopy[1][j - 1] + imageCopy[1][j + 1]) / 6;
-            } else if (i == 255) {
+            } else if (i == 255) { // else if down edge pixel, get average of adjacent pixels (6 pixels)
                 image[255][j] = (imageCopy[255][j] + imageCopy[255][j - 1] + imageCopy[255][j + 1] + imageCopy[254][j] + imageCopy[254][j - 1] + imageCopy[254][j + 1]) / 6;
-            } else if (j == 0) {
+            } else if (j == 0) { // else if left edge pixel, get average of adjacent pixels (6 pixels)
                 image[i][0] = (imageCopy[i][0] + imageCopy[i + 1][0] + imageCopy[i - 1][0] + imageCopy[i][1] + imageCopy[i + 1][1] + imageCopy[i - 1][1]) / 6;
-            } else if (j == 255) {
+            } else if (j == 255) { // else if right edge pixel, get average of adjacent pixels (6 pixels)
                 image[i][255] = (imageCopy[i][255] + imageCopy[i + 1][255] + imageCopy[i - 1][255] + imageCopy[i][254] + imageCopy[i + 1][254] + imageCopy[i - 1][254]) / 6;
-            } else {
+            } else { // else, get average of adjacent pixels (9 pixels)
                 image[i][j] = (image[i][j] + image[i][j + 1] + image[i][j - 1] + image[i - 1][j - 1] + image[i - 1][j] + image[i - 1][j + 1] + image[i + 1][j - 1] + image[i + 1][j] + image[i + 1][j + 1]) / 9;
             }
         }
@@ -667,7 +677,7 @@ void blur() {
 //_________________________________________
 void crop() {
     int x, y, l, w;
-    cout << "Enter x, y position." << endl;
+    cout << "Enter x, y position." << endl
     do {
         cin >> x >> y;
         if (x < 0 || x > 255 || y < 0 || y > 255) {
@@ -685,12 +695,14 @@ void crop() {
 
     unsigned char cropped_image[SIZE][SIZE];
 
+    // set every pixel on cropped_image to 255 (white)
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
             cropped_image[i][j] = 255;
         }
     }
 
+    // initialize i to x, and j to y, and keep adding pixels from image to cropped_image while i < x + l, and j < y + w
     for (int i {x}; i < x + l; ++i) {
         for (int j {y}; j < y + w; ++j) {
             cropped_image[i][j] = image[i][j];
@@ -891,7 +903,7 @@ void menu() {
             default:
                 break;
         }
-        
+
         if (choice != 0) {
             cout << "Do you want to save this filter?" << endl;
             cout << "(Y): yes or (N): no" << endl;
