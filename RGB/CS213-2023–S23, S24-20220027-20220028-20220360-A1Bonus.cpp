@@ -50,33 +50,33 @@ int main() {
 
 //_________________________________________
 void loadImage() {
-   char imageFileName[100];
+    char imageFileName[100];
 
-   // Get gray scale image file name
-   cout << "Enter the source image file name: ";
-   cin >> imageFileName;
+    // Get gray scale image file name
+    cout << "Enter the source image file name: ";
+    cin >> imageFileName;
 
-   // Add to it .bmp extension and load image
-   strcat(imageFileName, ".bmp");
-   readRGBBMP(imageFileName, image);
+    // Add to it .bmp extension and load image
+    strcat(imageFileName, ".bmp");
+    readRGBBMP(imageFileName, image);
 }
 
 //_________________________________________
 void saveImage() {
-   char imageFileName[100];
+    char imageFileName[100];
 
-   // Get gray scale image target file name
-   cout << "Enter the target image file name: ";
-   cin >> imageFileName;
+    // Get gray scale image target file name
+    cout << "Enter the target image file name: ";
+    cin >> imageFileName;
 
-   // Add to it .bmp extension and load image
-   strcat(imageFileName, ".bmp");
-   if(GS){
-       writeGSBMP(imageFileName, edgedImage);
-       GS = false;
-       return;
-   }
-   writeRGBBMP(imageFileName, result_image);
+    // Add to it .bmp extension and load image
+    strcat(imageFileName, ".bmp");
+    if(GS){
+        writeGSBMP(imageFileName, edgedImage);
+        GS = false;
+        return;
+    }
+    writeRGBBMP(imageFileName, result_image);
 }
 
 //_________________________________________
@@ -549,9 +549,9 @@ void shrink() {
         for (int i {0}, x {0}; i < SIZE; i += 4, ++x){
             for (int j {0}, y {0}; j < SIZE; j += 4, ++y) {
                 shrinked_image[x][y][0] = (image[i][j][0] + image[i][j + 1][0] + image[i][j + 2][0] + image[i][j + 3][0]
-                                        + image[i + 1][j][0] + image[i + 1][j + 1][0] + image[i + 1][j + 2][0] + image[i + 1][j + 3][0]
-                                        + image[i + 2][j][0] + image[i + 2][j + 1][0] + image[i + 2][j + 2][0] + image[i + 2][j + 3][0]
-                                        + image[i + 3][j][0] + image[i + 3][j + 1][0] + image[i + 3][j + 2][0] + image[i + 3][j + 3][0]) / 16;
+                                           + image[i + 1][j][0] + image[i + 1][j + 1][0] + image[i + 1][j + 2][0] + image[i + 1][j + 3][0]
+                                           + image[i + 2][j][0] + image[i + 2][j + 1][0] + image[i + 2][j + 2][0] + image[i + 2][j + 3][0]
+                                           + image[i + 3][j][0] + image[i + 3][j + 1][0] + image[i + 3][j + 2][0] + image[i + 3][j + 3][0]) / 16;
 
                 shrinked_image[x][y][1] = (image[i][j][1] + image[i][j + 1][1] + image[i][j + 2][1] + image[i][j + 3][1]
                                            + image[i + 1][j][1] + image[i + 1][j + 1][1] + image[i + 1][j + 2][1] + image[i + 1][j + 3][1]
@@ -863,12 +863,136 @@ void crop() {
 
 //_________________________________________
 void skew() {
+    double rad;
+    char choice;
 
+    cout << "Do you want to skew the image (h)orizontally or (v)ertically?" << endl;
+
+    do {
+        cin >> choice;
+        if (choice != 'h' && choice != 'H' && choice != 'v' && choice != 'V') {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (choice != 'h' && choice != 'H' && choice != 'v' && choice != 'V');
+
+    if (choice == 'h' || choice == 'H') {
+
+        cout << "Enter radian value." << endl;
+        cin >> rad;
+
+        rad = (rad * 22) / (180 * 7);
+
+        double mov = tan(rad) * 256;
+        double step = mov / SIZE;
+
+        unsigned char img_in[SIZE][SIZE + (int) mov][RGB];
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                for(int k {0} ; k < RGB ; ++k)
+                {
+                    img_in[i][j][k] = 255;
+                }
+            }
+        }
+
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                for(int k {0} ; k < RGB ; ++k)
+                {
+                    img_in[i][j + (int) mov][k] = image[i][j][k];
+                }
+            }
+            mov -= step;
+        }
+
+        for (int i {0}; i < SIZE; ++i) {
+            for (int j {0}; j < SIZE; ++j) {
+                for(int k{} ; k < RGB ; ++k)
+                {
+                    image[i][j][k] = img_in[i][j][k];
+                }
+            }
+        }
+
+    } else {
+        skew_vertically();
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            for(int k{} ; k < RGB ; ++k)
+            {
+                result_image[i][j][k] = image[i][j][k];
+            }
+        }
+    }
 }
 
 //_________________________________________
 void skew_vertically() {
+    double rad;
+    cout << "Enter radian value." << endl;
+    do {
+        cin >> rad;
+        if (rad < 0 || rad >= 45) {
+            cout << "Invalid input. Try again." << endl;
+        }
+    } while (rad < 0 || rad >= 45);
 
+    unsigned char img_in[SIZE][SIZE][RGB];
+
+    for (int i {0}; i < SIZE; ++i) {
+        for (int j {0}; j < SIZE; ++j) {
+            img_in[i][j][0] = 255;
+            img_in[i][j][1] = 255;
+            img_in[i][j][2] = 255;
+        }
+    }
+
+    for (int i {0}; i < SIZE; ++i) {
+        // compute the white places on the left of the image and on its right
+        int left = (SIZE - i) * tan(rad * M_PI / 180.0),
+                right = (i + 1) * tan(rad * M_PI / 180.0),
+                w = left;
+
+        // compute the shrink ratio
+        double shrink = (double) SIZE / (SIZE - (left + right)),
+                remainder = 0;
+
+        // move by the shrink ratio in each step
+        for (int j {0}; j < SIZE; j += floor(shrink + remainder)) {
+            // compute the average
+            for (int R_G_B {0}; R_G_B < 3; ++R_G_B) {
+                int avg {0};
+                for (int k {0}; k < floor(shrink + remainder); ++k) {
+                    avg += image[j][i + k][R_G_B];
+                }
+
+                // assign the average value to the image
+                img_in[w][i][R_G_B] = avg / floor(shrink + remainder);
+            }
+
+            // if the pixels of the skewed image exceeded the computed width break
+            if (w++ > SIZE - right) {
+                break;
+            }
+
+            // update the remainder
+            if (floor(shrink + remainder) > floor(shrink))
+                remainder -= (1 - (shrink - floor(shrink)));
+            else
+                remainder += shrink - floor(shrink);
+        }
+    }
+
+    // copy the result to the image
+    for (int i {0}; i < SIZE; i++) {
+        for (int j {0}; j < SIZE; j++) {
+            image[i][j][0] = img_in[i][j][0];
+            image[i][j][1] = img_in[i][j][1];
+            image[i][j][2] = img_in[i][j][2];
+        }
+    }
 }
 
 //_________________________________________
@@ -936,7 +1060,7 @@ void menu() {
                 crop();
                 break;
             case 14:
-//                skew();
+                skew();
                 break;
             default:
                 break;
