@@ -71,7 +71,7 @@ void saveImage() {
 
     // Add to it .bmp extension and load image
     strcat(imageFileName, ".bmp");
-    if(GS){
+    if (GS){
         writeGSBMP(imageFileName, edgedImage);
         GS = false;
         return;
@@ -91,7 +91,7 @@ void BW() {
 
     for (int i {0}; i < SIZE; ++i) {
         for (int j {0}; j < SIZE; ++j) {
-            if (image[i][j][0] + image[i][j][1] + image[i][j][2] > avg) {
+            if ((image[i][j][0] + image[i][j][1] + image[i][j][2]) / 3.0 > 128) {
                 image[i][j][0] = image[i][j][1] = image[i][j][2] = 255;
             } else {
                 image[i][j][0] = image[i][j][1] = image[i][j][2] = 0;
@@ -961,14 +961,14 @@ void skew_vertically() {
 
         // move by the shrink ratio in each step
         for (int j {0}; j < SIZE; j += floor(shrink + remainder)) {
-            
+
             for (int R_G_B {0}; R_G_B < 3; ++R_G_B) {
                 int avg {0};
                 for (int k {0}; k < floor(shrink + remainder); ++k) {
                     avg += image[j][i + k][R_G_B];
                 }
 
-                
+
                 img_in[w][i][R_G_B] = avg / floor(shrink + remainder);
             }
 
@@ -978,7 +978,7 @@ void skew_vertically() {
                 break;
             }
             ++w;
-            
+
             if (floor(shrink + remainder) > floor(shrink)) {
                 remainder -= (1 - (shrink - floor(shrink)));
             } else {
