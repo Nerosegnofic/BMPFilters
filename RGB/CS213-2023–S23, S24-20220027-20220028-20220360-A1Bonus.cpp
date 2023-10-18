@@ -961,29 +961,29 @@ void skew_vertically() {
 
         // move by the shrink ratio in each step
         for (int j {0}; j < SIZE; j += floor(shrink + remainder)) {
-            // compute the average
+            
             for (int R_G_B {0}; R_G_B < 3; ++R_G_B) {
                 int avg {0};
                 for (int k {0}; k < floor(shrink + remainder); ++k) {
                     avg += image[j][i + k][R_G_B];
                 }
 
-                // assign the average value to the image
+                
                 img_in[w][i][R_G_B] = avg / floor(shrink + remainder);
             }
 
-            // if the pixels of the skewed image exceeded the computed width break
+            // if pixel exceeds calculated width
             if (w > SIZE - right) {
                 ++w;
                 break;
             }
             ++w;
-
-            // update the remainder
-            if (floor(shrink + remainder) > floor(shrink))
+            
+            if (floor(shrink + remainder) > floor(shrink)) {
                 remainder -= (1 - (shrink - floor(shrink)));
-            else
+            } else {
                 remainder += shrink - floor(shrink);
+            }
         }
     }
 
