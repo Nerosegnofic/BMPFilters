@@ -973,9 +973,11 @@ void skew_vertically() {
             }
 
             // if the pixels of the skewed image exceeded the computed width break
-            if (w++ > SIZE - right) {
+            if (w > SIZE - right) {
+                ++w;
                 break;
             }
+            ++w;
 
             // update the remainder
             if (floor(shrink + remainder) > floor(shrink))
